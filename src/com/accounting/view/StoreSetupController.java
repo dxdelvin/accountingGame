@@ -49,6 +49,9 @@ public class StoreSetupController {
     private int objectsInRedBox = 0; // Track objects in the red box
     private boolean isStoreConfirmed = false; // Track if store design is confirmed
 
+    private boolean allObjectsInRedBox = false; // Flag to track if all objects are in the red box
+    private boolean isConfirmationShown = false; // Flag to track if confirmation dialogue has been shown
+
     @FXML
     public void initialize() {
         // Populate dialogues
@@ -59,6 +62,7 @@ public class StoreSetupController {
         dialogues.add(new Dialogue("So Can You see Your Store Equipments", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
         dialogues.add(new Dialogue("I Found them from Garage", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
         dialogues.add(new Dialogue("So Click and Drag to Red Box And Start Building It!", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
+        dialogues.add(new Dialogue("Now lets Focus in Building Your Brand Name", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
 
         // Set the initial dialogue and character image
         displayCurrentDialogue();
@@ -79,8 +83,6 @@ public class StoreSetupController {
         characterDialogue.setOnMouseClicked(event -> nextDialogue());
     }
 
-    private boolean allObjectsInRedBox = false; // Flag to track if all objects are in red box
-
     @FXML
     private void nextDialogue() {
         // Proceed to the next dialogue if not at the last one
@@ -89,7 +91,7 @@ public class StoreSetupController {
             displayCurrentDialogue();
         }
 
-        // Special handling for dialogue index 6
+        // Special handling for dialogue index 6 (after showing the message about dragging objects)
         if (currentDialogueIndex == 6) {
             dialogueBox.setTranslateX(dialogueBox.getTranslateX() - 120);
             redBorderBox.setVisible(true);
@@ -102,10 +104,15 @@ public class StoreSetupController {
             signBoard.setDisable(false);
         }
 
-        // After all objects are in the red box, show confirmation
-        if (allObjectsInRedBox && !isStoreConfirmed) {
+        // Once all objects are inside the red box, show the "Confirm Your Store" dialogue
+        if (allObjectsInRedBox && !isConfirmationShown) {
+            characterDialogue.setText("Click to Confirm Your Store!");
+            isConfirmationShown = true;
+        }
+
+        // Once confirmation is done, lock objects and show the congratulatory message
+        if (isStoreConfirmed && currentDialogueIndex < dialogues.size()) {
             characterDialogue.setText("Congrats on Your New Store!");
-            isStoreConfirmed = true;
             makeObjectsNonMovable(); // Lock objects
         }
 
@@ -161,7 +168,7 @@ public class StoreSetupController {
     private void checkCompletion() {
         if (objectsInRedBox == 5) {
             allObjectsInRedBox = true;
-            characterDialogue.setText("Confirm Your Store Design!");
+            characterDialogue.setText("Click to Confirm Your Store!");
         } else {
             allObjectsInRedBox = false;
             characterDialogue.setText("Complete Your Design!");
