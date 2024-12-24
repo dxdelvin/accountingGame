@@ -1,85 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Group?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.paint.LinearGradient?>
-<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1280.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1280.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.accounting.view.StoreSetupController">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" height="586.0" layoutX="-1.0" layoutY="-5.0" stroke="BLACK" strokeType="INSIDE" width="1292.0">
-         <fill>
-            <LinearGradient endY="1.0" startY="0.23863633473714194">
-               <stops>
-                  <Stop>
-                     <color>
-                        <Color red="0.12999999523162842" green="0.5094422698020935" blue="1.0" />
-                     </color>
-                  </Stop>
-                  <Stop offset="1.0">
-                     <color>
-                        <Color red="1.0" green="1.0" blue="1.0" />
-                     </color>
-                  </Stop>
-               </stops>
-            </LinearGradient>
-         </fill>
-      </Rectangle>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1fff69" height="219.0" layoutX="-40.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="1331.0" />
-      <Group layoutX="459.0" layoutY="140.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff212180" height="420.0" stroke="BLACK" strokeType="INSIDE" width="420.0" />
-            <ImageView fx:id="behindBase" fitHeight="269.0" fitWidth="359.0" layoutX="14.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../Images/Store/Behind_Base@2x.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="backRightStick" fitHeight="403.0" fitWidth="361.0" layoutX="279.01251220703125" layoutY="33.30000305175781" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8" scaleZ="0.8">
-               <image>
-                  <Image url="@../Images/Store/Back_Right@2x.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="backLeftStick" fitHeight="403.0" fitWidth="361.0" layoutX="67.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8" scaleZ="0.8">
-               <image>
-                  <Image url="@../Images/Store/Back_Left@2x.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="frontLeftStick" fitHeight="403.0" fitWidth="361.0" layoutX="39.110687255859375" layoutY="34.30000305175781" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8" scaleZ="0.8">
-               <image>
-                  <Image url="@../Images/Store/Front_Left@2x.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="frontRightStick" fitHeight="403.0" fitWidth="361.0" layoutX="312.4208984375" layoutY="24.300003051757812" pickOnBounds="true" preserveRatio="true" scaleX="0.8" scaleY="0.8" scaleZ="0.8">
-               <image>
-                  <Image url="@../Images/Store/Front_Right@2x.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="main_board" fitHeight="403.0" fitWidth="361.0" layoutX="38.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../Images/Store/Main_Board@2x.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="frontBase" fitHeight="234.0" fitWidth="416.0" layoutX="-32.0" layoutY="198.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../Images/Store/Front%20Base@2x.png" />
-               </image>
-            </ImageView>
-         </children>
-      </Group>
-      <ImageView fx:id="characterDialogue" fitHeight="144.0" fitWidth="260.0" layoutX="956.0" layoutY="472.0" pickOnBounds="true" preserveRatio="true" scaleX="2.5" scaleY="2.5" scaleZ="2.5">
+   
+      <ImageView fx:id="sky" fitHeight="641.0" fitWidth="1296.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images/Char_Normal.png" />
+            <Image url="@../Images/Store/sky@2x.png" />
          </image>
       </ImageView>
-      <TextArea fx:id="dialogueChar" accessibleRole="IMAGE_VIEW" blendMode="MULTIPLY" cache="true" cacheHint="SPEED" layoutX="835.0" layoutY="413.0" prefHeight="118.0" prefWidth="210.0" style="-fx-font-size: 16px;" text="Welcome to Your Limonade Geschaft" wrapText="true">
-         <font>
-            <Font name="System Bold Italic" size="41.0" />
-         </font></TextArea>
+      <ImageView fx:id="grass" fitHeight="200.0" fitWidth="1343.0" layoutX="-8.0" layoutY="522.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/grass@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="83.0" fitWidth="212.0" layoutX="777.0" layoutY="370.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/backBase@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="characterImage" fitHeight="200.0" fitWidth="200.0" layoutX="787.0" layoutY="261.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/Char@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="stick2" fitHeight="280.0" fitWidth="280.0" layoutX="367.0" layoutY="255.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/stick@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="stick3" fitHeight="280.0" fitWidth="280.0" layoutX="288.0" layoutY="250.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/stick%202@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="stick1" fitHeight="280.0" fitWidth="280.0" layoutX="439.0" layoutY="252.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/stick%204@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="stick4" fitHeight="280.0" fitWidth="280.0" layoutX="216.0" layoutY="252.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/stick%203@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="135.0" fitWidth="311.0" layoutX="717.0" layoutY="405.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/frontBase@2x.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="signBoard" fitHeight="134.0" fitWidth="375.0" layoutX="139.0" layoutY="413.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Store/signBoard@2x.png" />
+         </image>
+      </ImageView>
+      <StackPane fx:id="dialogueBox" layoutX="598.0" layoutY="174.0" prefHeight="191.0" prefWidth="170.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="191.0" stroke="BLACK" strokeType="INSIDE" width="188.0" />
+            <Label fx:id="characterDialogue" alignment="CENTER" onMouseClicked="#nextDialogue" prefHeight="179.0" prefWidth="169.0" text="Hallo und Willkommen!" textOverrun="CLIP" wrapText="true">
+               <font>
+                  <Font name="Franklin Gothic Demi Italic" size="27.0" />
+               </font>
+            </Label>
+         </children>
+      </StackPane>
+      <Rectangle fx:id="redBorderBox" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="422.0" layoutX="676.0" layoutY="126.0" stroke="RED" strokeType="INSIDE" visible="false" width="404.0" />
    </children>
 </AnchorPane>
