@@ -2,7 +2,9 @@ package com.accounting.view;
 
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -11,7 +13,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StoreSetupController {
 
@@ -41,6 +45,14 @@ public class StoreSetupController {
 
     @FXML
     private AnchorPane rootPane;
+    
+    @FXML
+    private AnchorPane accountsPane;
+
+    @FXML
+    private Button accountsButton;
+
+    private boolean isPaneOpen = false;
 
     // List to hold dialogues and character images
     private List<Dialogue> dialogues = new ArrayList<>();
@@ -62,7 +74,6 @@ public class StoreSetupController {
         dialogues.add(new Dialogue("So Can You see Your Store Equipments", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
         dialogues.add(new Dialogue("I Found them from Garage", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
         dialogues.add(new Dialogue("So Click and Drag to Red Box And Start Building It!", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
-        dialogues.add(new Dialogue("Now lets Focus in Building Your Brand Name", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
 
         // Set the initial dialogue and character image
         displayCurrentDialogue();
@@ -81,22 +92,30 @@ public class StoreSetupController {
 
         // Set up the label's on-click behavior
         characterDialogue.setOnMouseClicked(event -> nextDialogue());
+        
+        accountsPane.setTranslateX(-500); 
+        isPaneOpen = false;
+        accountsButton.setOnAction(event -> toggleAccountsPane());
+
     }
+    
+    private Boolean movement = true;
 
     @FXML
     private void nextDialogue() {
-        // Proceed to the next dialogue if not at the last one
         if (currentDialogueIndex < dialogues.size() - 1) {
             currentDialogueIndex++;
             displayCurrentDialogue();
         }
 
-        // Special handling for dialogue index 6 (after showing the message about dragging objects)
         if (currentDialogueIndex == 6) {
-            dialogueBox.setTranslateX(dialogueBox.getTranslateX() - 120);
+        	while(movement == true) {        		
+        		dialogueBox.setTranslateX(dialogueBox.getTranslateX() - 120);
+        		movement = false;
+        	}
+        	animateRedBox(redBorderBox);
             redBorderBox.setVisible(true);
 
-            // Enable the objects for dragging
             stick1.setDisable(false);
             stick2.setDisable(false);
             stick3.setDisable(false);
@@ -104,23 +123,28 @@ public class StoreSetupController {
             signBoard.setDisable(false);
         }
 
-        // Once all objects are inside the red box, show the "Confirm Your Store" dialogue
         if (allObjectsInRedBox && !isConfirmationShown) {
             characterDialogue.setText("Click to Confirm Your Store!");
+            
+        }
+        if (currentDialogueIndex == 6 && allObjectsInRedBox) {
+        	System.out.println("7th dialogue going on");
+            dialogues.add(new Dialogue("Now lets Focus in Building Your Brand Name ('press enter')", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
+            currentDialogueIndex++;
+            displayCurrentDialogue();
             isConfirmationShown = true;
+            makeObjectsNonMovable();
+            positionBrandNameField();
         }
-
-        // Once confirmation is done, lock objects and show the congratulatory message
-        if (isStoreConfirmed && currentDialogueIndex < dialogues.size()) {
-            characterDialogue.setText("Congrats on Your New Store!");
-            makeObjectsNonMovable(); // Lock objects
-        }
-
-        // Hide the dialogue box if no more dialogues are left
-        if (currentDialogueIndex >= dialogues.size()) {
-            characterDialogue.setVisible(false);
-            dialogueBox.setVisible(false);
-        }
+    }
+    
+    private void animateRedBox(Rectangle redBox) {
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(200), redBox);
+        fadeTransition.setFromValue(1.0); // Start with full opacity
+        fadeTransition.setToValue(0.0);   // Fade to invisible
+        fadeTransition.setCycleCount(2);  // Fade in and out
+        fadeTransition.setAutoReverse(true); // Reverse the animation
+        fadeTransition.play();
     }
 
     private void displayCurrentDialogue() {
@@ -140,10 +164,13 @@ public class StoreSetupController {
         fadeIn.setOnFinished(event -> characterDialogue.setText(text));
         fadeIn.play();
     }
-
+    
+    private Set<ImageView> objectsInBox = new HashSet<>();
     private void initializeDraggable(ImageView object) {
         object.setOnMousePressed(event -> {
-            object.setUserData(new double[]{event.getSceneX() - object.getLayoutX(), event.getSceneY() - object.getLayoutY()});
+            if (!isStoreConfirmed) {
+                object.setUserData(new double[]{event.getSceneX() - object.getLayoutX(), event.getSceneY() - object.getLayoutY()});
+            }
         });
 
         object.setOnMouseDragged(event -> {
@@ -151,16 +178,24 @@ public class StoreSetupController {
                 double[] offset = (double[]) object.getUserData();
                 object.setLayoutX(event.getSceneX() - offset[0]);
                 object.setLayoutY(event.getSceneY() - offset[1]);
+
+                
             }
         });
 
         object.setOnMouseReleased(event -> {
-            if (isInsideRedBox(object)) {
-                objectsInRedBox++;
+            if (!isStoreConfirmed && isInsideRedBox(object)) {
+                // Check if the object is already in the box
+                if (!objectsInBox.contains(object)) {
+                    objectsInRedBox++; // Increment count only for new objects
+                    objectsInBox.add(object); // Mark the object as inside the box
+                }
                 checkCompletion();
-            } else {
-                objectsInRedBox = Math.max(objectsInRedBox - 1, 0);
-                allObjectsInRedBox = false;
+            } else if (objectsInBox.contains(object) && !isInsideRedBox(object)) {
+                // If an object is moved out of the box, remove it from the set and decrement the counter
+                objectsInBox.remove(object);
+                objectsInRedBox--;
+                checkCompletion();
             }
         });
     }
@@ -168,7 +203,9 @@ public class StoreSetupController {
     private void checkCompletion() {
         if (objectsInRedBox == 5) {
             allObjectsInRedBox = true;
-            characterDialogue.setText("Click to Confirm Your Store!");
+            if (!isConfirmationShown) {
+                characterDialogue.setText("Click to Confirm Your Store!");
+            }
         } else {
             allObjectsInRedBox = false;
             characterDialogue.setText("Complete Your Design!");
@@ -176,17 +213,113 @@ public class StoreSetupController {
     }
 
     private void makeObjectsNonMovable() {
-        stick1.setDisable(true);
-        stick2.setDisable(true);
-        stick3.setDisable(true);
-        stick4.setDisable(true);
-        signBoard.setDisable(true);
+        stick1.setOnMouseDragged(null);
+        stick2.setOnMouseDragged(null);
+        stick3.setOnMouseDragged(null);
+        stick4.setOnMouseDragged(null);
+        signBoard.setOnMouseDragged(null);
     }
 
     private boolean isInsideRedBox(ImageView object) {
         return redBorderBox.getBoundsInParent().contains(object.getBoundsInParent());
     }
+    
+    
+    private void toggleAccountsPane() {
+        if (isPaneOpen) {
+            // Slide the pane out
+            accountsPane.setTranslateX(-500);
+            accountsButton.setText("Open Accounts");
+        } else {
+            // Slide the pane in
+            accountsPane.setTranslateX(0);
+            accountsButton.setText("Close Accounts");
+        }
+        isPaneOpen = !isPaneOpen;
+    }
 
+    
+    
+    @FXML
+    private TextField brandNameField;
+
+    private boolean isBrandNameEntered = false;
+    
+    
+    private void positionBrandNameField() {
+        // Get the position of the signBoard
+        double signBoardX = signBoard.getLayoutX();
+        double signBoardY = signBoard.getLayoutY();
+
+        // Adjust the position for the brandNameField
+        // Offset can be used to fine-tune the placement on the signBoard
+        double offsetX = 10; // Optional: Adjust for alignment
+        double offsetY = signBoard.getFitHeight() / 2 - 10; // Center the field
+
+        // Set the position of the brandNameField
+        brandNameField.setLayoutX(signBoardX + offsetX);
+        brandNameField.setLayoutY(signBoardY + offsetY - 35);
+
+        // Adjust the width of the brandNameField to match the signBoard
+        brandNameField.setPrefWidth(signBoard.getFitWidth() - 20); // Optional^
+        brandNameField.setDisable(false);
+        brandNameField.setPromptText("Enter Name");
+
+        // Limit text to 12 characters
+        brandNameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > 12) {
+                brandNameField.setText(oldValue); // Revert to the old value if input exceeds 12 characters
+            }
+        });
+    }
+
+    private void checkSignBoardLocation() {
+        if (isInsideRedBox(signBoard) && currentDialogueIndex == 7) {
+            // Display the dialogue for entering the brand name
+        	System.out.println("Signboard is inside the red box!");
+            characterDialogue.setText("Hey, let's give your business a cool name to remember!");
+            positionBrandNameField();
+            brandNameField.setDisable(false); // Enable the field
+            brandNameField.requestFocus(); // Focus the field
+            brandNameField.setVisible(true);
+            brandNameField.setOnAction(event -> handleBrandNameInput());
+        }
+    }
+    
+    @FXML
+    private void handleBrandNameInput() {
+        String brandName = brandNameField.getText().trim();
+
+        if (brandName.isEmpty()) {
+            characterDialogue.setText("Hey, you need to write your brand name!");
+        } else {
+            characterDialogue.setText("Great Name Choice!");
+            isBrandNameEntered = true;
+            
+            dialogues.add(new Dialogue("Sehr Toll! Lets sell some LIMONADE!", new Image(getClass().getResource("/Images/Store/charHappy.png").toExternalForm())));
+            currentDialogueIndex++;
+            displayCurrentDialogue();
+            
+
+            // Lock all objects and disable further editing of the field
+            brandNameField.setDisable(true); // Optionally disable after input
+            saveLayoutData(brandName);
+        }
+    }
+    
+    private void saveLayoutData(String brandName) {
+        StringBuilder layoutData = new StringBuilder();
+        layoutData.append("Brand Name: ").append(brandName).append("\n");
+        layoutData.append("Stick1: ").append(stick1.getLayoutX()).append(", ").append(stick1.getLayoutY()).append("\n");
+        layoutData.append("Stick2: ").append(stick2.getLayoutX()).append(", ").append(stick2.getLayoutY()).append("\n");
+        layoutData.append("Stick3: ").append(stick3.getLayoutX()).append(", ").append(stick3.getLayoutY()).append("\n");
+        layoutData.append("Stick4: ").append(stick4.getLayoutX()).append(", ").append(stick4.getLayoutY()).append("\n");
+        layoutData.append("SignBoard: ").append(signBoard.getLayoutX()).append(", ").append(signBoard.getLayoutY()).append("\n");
+
+        // Save data to a file or pass it to the next FXML
+        System.out.println(layoutData); // For debugging purposes
+    }
+    
     // Inner class to represent dialogue
     private static class Dialogue {
         private final String text;
