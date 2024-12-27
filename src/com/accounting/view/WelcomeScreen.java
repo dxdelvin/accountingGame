@@ -21,12 +21,15 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+
 
 public class WelcomeScreen {
     private Scene scene;
-    private int screenWidth = 1280;
-    private int screenHeight = 720;
+    public static int screenWidth = 1280;
+    public static int screenHeight = 720;
 
     public WelcomeScreen(Stage primaryStage) {
         
@@ -136,7 +139,33 @@ public class WelcomeScreen {
         });
 
         layout.getChildren().add(nextButton);
+        
+     // Load Game Button
+        Button loadButton = new Button("Load Game");
+        loadButton.setLayoutX(screenWidth / 2 - 90);
+        loadButton.setLayoutY(screenHeight - 112);
+        loadButton.setStyle("-fx-font-size: 2.5em; -fx-background-color: #ffffff; -fx-font-family: Poppins;");
+        loadButton.setVisible(false);
 
+        // Get the next chapter to load
+        int nextChapter = GameProgressManager.getNextChapterToLoad();
+        if (nextChapter != -1) {
+            loadButton.setVisible(true);
+        }
+
+        loadButton.setOnAction(event -> {
+            try {
+                String chapterFXML = String.format("/FXML/Chapter%d.fxml", nextChapter);
+                Pane chapterRoot = FXMLLoader.load(getClass().getResource(chapterFXML));
+                Scene chapterScene = new Scene(chapterRoot, screenWidth, screenHeight);
+                primaryStage.setScene(chapterScene);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Failed to load chapter FXML.");
+            }
+        });
+        layout.getChildren().add(loadButton);
+        
         // Set the Scene
         scene = new Scene(layout, screenWidth, screenHeight);
     }

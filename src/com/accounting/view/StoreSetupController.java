@@ -2,20 +2,33 @@ package com.accounting.view;
 
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import com.accounting.view.WelcomeScreen;
+
 
 public class StoreSetupController {
 
@@ -64,6 +77,8 @@ public class StoreSetupController {
     private boolean allObjectsInRedBox = false; // Flag to track if all objects are in the red box
     private boolean isConfirmationShown = false; // Flag to track if confirmation dialogue has been shown
 
+    private Stage primaryStage;
+
     @FXML
     public void initialize() {
         // Populate dialogues
@@ -96,7 +111,8 @@ public class StoreSetupController {
         accountsPane.setTranslateX(-500); 
         isPaneOpen = false;
         accountsButton.setOnAction(event -> toggleAccountsPane());
-
+        
+        
     }
     
     private Boolean movement = true;
@@ -308,17 +324,32 @@ public class StoreSetupController {
     }
     
     private void saveLayoutData(String brandName) {
-        StringBuilder layoutData = new StringBuilder();
-        layoutData.append("Brand Name: ").append(brandName).append("\n");
-        layoutData.append("Stick1: ").append(stick1.getLayoutX()).append(", ").append(stick1.getLayoutY()).append("\n");
-        layoutData.append("Stick2: ").append(stick2.getLayoutX()).append(", ").append(stick2.getLayoutY()).append("\n");
-        layoutData.append("Stick3: ").append(stick3.getLayoutX()).append(", ").append(stick3.getLayoutY()).append("\n");
-        layoutData.append("Stick4: ").append(stick4.getLayoutX()).append(", ").append(stick4.getLayoutY()).append("\n");
-        layoutData.append("SignBoard: ").append(signBoard.getLayoutX()).append(", ").append(signBoard.getLayoutY()).append("\n");
+        Map<String, String> layoutData = new HashMap<>();
+        layoutData.put("Brand Name", brandName);
+        layoutData.put("Stick1", stick1.getLayoutX() + ", " + stick1.getLayoutY());
+        layoutData.put("Stick2", stick2.getLayoutX() + ", " + stick2.getLayoutY());
+        layoutData.put("Stick3", stick3.getLayoutX() + ", " + stick3.getLayoutY());
+        layoutData.put("Stick4", stick4.getLayoutX() + ", " + stick4.getLayoutY());
+        layoutData.put("SignBoard", signBoard.getLayoutX() + ", " + signBoard.getLayoutY());
+        
+        layoutData.put("chapter0", "true");
 
-        // Save data to a file or pass it to the next FXML
-        System.out.println(layoutData); // For debugging purposes
+        // Debugging output (Optional)
+        layoutData.forEach((key, value) -> System.out.println(key + ": " + value));
+
+        // Save data using GameProgressManager
+        GameProgressManager.saveProgress(layoutData);
+        this.primaryStage = (Stage) rootPane.getScene().getWindow();
+        try {
+            Pane nextRoot = FXMLLoader.load(getClass().getResource("/FXML/chapter1.fxml"));
+            Scene nextScene = new Scene(nextRoot, WelcomeScreen.screenWidth, WelcomeScreen.screenHeight);
+            primaryStage.setScene(nextScene);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load chapter1.fxml");
+        }
     }
+
     
     // Inner class to represent dialogue
     private static class Dialogue {
