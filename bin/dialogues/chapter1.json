@@ -1,0 +1,24 @@
+{
+  "dialogues": [
+    {"id": 1, "type": "Normal", "text": "Welcome to {BrandName} Store!", "nextId": 2},
+    {"id": 2, "type": "Normal", "text": "You Starting a Business!", "nextId": 3},
+    {"id": 3, "type": "YesNo", "text": "You are gonna earn in Billions Business!","options": ["Yes", "No"], "nextId": {"Yes": 4, "No": 5}},
+    {"id": 4, "type": "Normal", "text": "Yeah we need a scorecard to maintain our transactions!", "nextId": 7},
+    {"id": 5, "type": "Normal", "text": "Oh Common be Postive!", "nextId": 6},
+    {"id": 6, "type": "Normal", "text": "We do need a scorecard to maintain out transaction tho!", "nextId": 7},
+	{"id": 7, "type": "YesNo", "text": "You should check your piggy bank", "options": ["Finee", "Why?"], "nextId": {"Finee": 8, "Why?": 9}},
+    {"id": 8, "type": "Normal", "text": "You Found 5 Euros!!!", "nextId": 10},
+    {"id": 9, "type": "Normal", "text": "You need to Invest in Your Business, so you found 5 Euros in Your Piggy bank", "nextId": 10},
+    {"id": 10, "type": "Normal", "text": "We should name something instead of Piggy Bank", "nextId": 11},
+    {"id": 11, "type": "Normal", "text": "How about 'Original Investment'?", "nextId": 12},
+	{"id": 12, "type": "YesNo", "text": "Who owns the Original Investment", "options": ["You?", "Myself!?"], "nextId": {"You?": 13, "Myself!?": 14}},
+	{"id": 13, "type": "Normal", "text": "Thankss! but its your hard earned money. so You own it not me!", "nextId": 15},
+	{"id": 14, "type": "Normal", "text": "Correct!", "nextId": 15},
+	{"id": 15, "type": "Normal", "text": "We need to put this in the scoreboard", "nextId": 16},
+	{"id": 16, "type": "Normal", "text": "So This should be on right side of your scoreboard", "nextId": 17},
+	{"id": 17, "type": "Normal", "text": "There is a Rule in a scoreboard", "nextId": 18},
+	{"id": 18, "type": "Normal", "text": "ALWAYS REMEMBER IT!!", "nextId": 19},
+	{"id": 19, "type": "Normal", "text": "LEFT SIDE ALWAYS EQUAL THE RIGHT SIDE", "nextId": 20}
+  ]
+}
+

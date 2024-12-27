@@ -2,12 +2,18 @@ package com.accounting.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
+
+import com.accounting.main.Dialogue;
+import com.accounting.main.DialogueSystem;
 
 public class Chapter1Controller {
 
@@ -24,6 +30,20 @@ public class Chapter1Controller {
     private ImageView stick3;    
     @FXML
     private ImageView stick1;     
+    @FXML
+    private TextField brandNameField;
+    
+    @FXML
+    private Label dialogueLabel; // The label to display dialogue text
+    @FXML
+    private Button optionButton1; // First option button (Yes/No or Next)
+    @FXML
+    private Button optionButton2; // Second option button (Yes/No or unused)
+    @FXML
+    private TextField inputField; // Input field for user input
+
+    private DialogueSystem dialogueSystem;
+    private int currentDialogueId;
     
     @FXML
     private AnchorPane accountsPane;
@@ -44,12 +64,97 @@ public class Chapter1Controller {
         accountsPane.setTranslateX(-500); 
         isPaneOpen = false;
         accountsButton.setOnAction(event -> toggleAccountsPane());
+        
+        dialogueSystem = new DialogueSystem("chapter1.json", brandName); // Load the dialogue JSON
+        currentDialogueId = 1; // Start from the first dialogue
+        displayCurrentDialogue();
+    }
+    
+    private void displayCurrentDialogue() {
+        Dialogue currentDialogue = dialogueSystem.getDialogue(currentDialogueId);
+        if (currentDialogue == null) {
+            return; // Handle error case if dialogue is not found
+        }
+
+        dialogueLabel.setText(currentDialogue.getText()); // Set the dialogue text
+
+        // Handle different dialogue types
+        if (currentDialogue.getType().equals("Normal")) {
+            optionButton1.setText("Next");
+            optionButton2.setVisible(false); // Hide second button for normal dialogues
+            inputField.setVisible(false); // Hide input field for normal dialogues
+        } else if (currentDialogue.getType().equals("YesNo")) {
+            optionButton1.setText(currentDialogue.getOptions()[0]); // Set option 1 text (e.g., "Yes")
+            optionButton2.setText(currentDialogue.getOptions()[1]); // Set option 2 text (e.g., "No")
+            optionButton2.setVisible(true); // Show second option button
+            inputField.setVisible(false); // Hide input field for Yes/No dialogues
+        } else if (currentDialogue.getType().equals("Input")) {
+            optionButton1.setText("Submit");
+            optionButton2.setVisible(false); // No second button
+            inputField.setVisible(true); // Show input field for Input dialogues
+        }
     }
 
+    // This method handles the first option button (Yes/Next/Submit)
+    @FXML
+    private void onOption1Clicked() {
+        Dialogue currentDialogue = dialogueSystem.getDialogue(currentDialogueId);
+
+        if (currentDialogue.getType().equals("Input")) {
+            String input = inputField.getText(); // Get the input from the user
+            // Handle the input value (store the name, etc.)
+            System.out.println("User input: " + input);
+        }
+        
+        moveToNextDialogue(currentDialogue); // Move to the next dialogue
+    }
+
+    // This method handles the second option button (Yes/No)
+    @FXML
+    private void onOption2Clicked() {
+        Dialogue currentDialogue = dialogueSystem.getDialogue(currentDialogueId);
+        String selectedOption = optionButton2.getText(); // Get the selected option (Yes/No)
+        Map<String, Integer> nextMap = (Map<String, Integer>) currentDialogue.getNextId();
+        currentDialogueId = nextMap.get(selectedOption); // Update to the next dialogue based on the option
+        displayCurrentDialogue(); // Update the dialogue display
+    }
+
+    // This method moves to the next dialogue (based on the current dialogue's nextId)
+    private void moveToNextDialogue(Dialogue currentDialogue) {
+        if (currentDialogue.getNextId() instanceof Integer) {
+            currentDialogueId = (Integer) currentDialogue.getNextId(); // Move to the next dialogue if it's just an ID
+        } else if (currentDialogue.getNextId() instanceof Map) {
+            Map<String, Integer> nextMap = (Map<String, Integer>) currentDialogue.getNextId();
+            
+            // Assuming the selected option is stored in the button text
+            String selectedOption = optionButton1.getText(); // Or another logic for selecting option
+            Integer nextDialogueId = nextMap.get(selectedOption);
+
+            // Check if the next dialogue ID exists in the map
+            if (nextDialogueId != null) {
+                currentDialogueId = nextDialogueId; // Update to the next dialogue based on selected option
+            } else {
+                // Handle the case where the option isn't valid
+                System.out.println("Selected option is not valid: " + selectedOption);
+                return;
+            }
+        }
+
+        displayCurrentDialogue(); // Update the dialogue view after changing the ID
+    }
+
+
+
+    // default 
     private void readGameProgressFromFile(String fileName) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
+            	if (line.startsWith("Brand Name=")) {
+                    String brandName = line.substring("Brand Name=".length());
+                    brandNameField.setText(brandName); 
+                    
+                }
                 String[] data = line.split("=");
                 if (data.length == 2) {
                     String key = data[0].trim();
@@ -82,6 +187,16 @@ public class Chapter1Controller {
                             System.out.println("Unknown key: " + key);
                             break;
                     }
+                    double signBoardX = signBoard.getLayoutX();
+                    double signBoardY = signBoard.getLayoutY();
+
+                    double offsetX = 10; 
+                    double offsetY = signBoard.getFitHeight() / 2 - 10;
+
+                    brandNameField.setLayoutX(signBoardX + offsetX);
+                    brandNameField.setLayoutY(signBoardY + offsetY - 35);
+
+                    brandNameField.setPrefWidth(signBoard.getFitWidth() - 20); 
                 }
             }
         } catch (IOException e) {
@@ -103,15 +218,8 @@ public class Chapter1Controller {
         }
     }
 
-    // Getter methods for brandName and chapter0 (if needed elsewhere in the game)
-    public String getBrandName() {
-        return brandName;
-    }
 
-    public boolean isChapter0() {
-        return chapter0;
-    }
-    
+  
     private void toggleAccountsPane() {
         if (isPaneOpen) {
             // Slide the pane out
