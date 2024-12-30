@@ -1,13 +1,16 @@
 package com.accounting.view;
 
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -55,6 +58,15 @@ public class Chapter1Controller {
 
     @FXML
     private Button accountsButton;
+    
+    @FXML
+    private VBox scrollableImageContainer;
+    @FXML
+    private ImageView zoomImageView;
+    @FXML
+    private Button closeZoomButton;
+
+    private boolean imagesAdded = false;
     
     
     private boolean isPaneOpen = false;
@@ -226,25 +238,20 @@ public class Chapter1Controller {
 
   
     private void toggleAccountsPane() {
+    	TranslateTransition transition = new TranslateTransition(Duration.millis(300), accountsPane);
+
         if (isPaneOpen) {
-            // Slide the pane out
+        	transition.setToX(-500);
             accountsPane.setTranslateX(-500);
             accountsButton.setText("Open Accounts");
         } else {
-            // Slide the pane in
+        	transition.setToX(0);
             accountsPane.setTranslateX(0);
             accountsButton.setText("Close Accounts");
-        }
+        }transition.setToX(0);
         isPaneOpen = !isPaneOpen;
     }
     
-    
-    // Learning Image
-    @FXML
-    private VBox scrollableImageContainer; // Scrollable area for learning images
-
-    @FXML
-    private ImageView zoomImageView; // Full-size zoom image view
 
     private LearningImageManager learningImageManager;
 
@@ -255,20 +262,30 @@ public class Chapter1Controller {
         System.out.println("handleDialogueTrigger called with dialogueId: " + dialogueId);
         switch (dialogueId) {
             case 2:
-                System.out.println("Triggering LearningImage101.png");
                 learningImageManager.triggerImage("/Images/LearningImage/LearningImage101.png");
                 break;
             case 3:
-                System.out.println("Triggering LearningImage102.png");
                 learningImageManager.triggerImage("/Images/LearningImage/LearningImage102.png");
                 break;
             case 4:
-                System.out.println("Triggering LearningImage103.png");
                 learningImageManager.triggerImage("/Images/LearningImage/LearningImage103.png");
                 break;
             default:
-                System.out.println("No image to trigger for dialogueId: " + dialogueId);
                 break;
         }
     }
+
+    public void showZoomedImage(Image image) {
+        zoomImageView.setImage(image);
+        zoomImageView.setVisible(true);
+        closeZoomButton.setVisible(true);
+    }
+
+    @FXML
+    public void closeZoomView(MouseEvent event) {
+        zoomImageView.setVisible(false);
+        closeZoomButton.setVisible(false);
+    }
+    
+    
 }
