@@ -1,7 +1,9 @@
 package com.accounting.view;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -17,11 +20,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 
+import com.accounting.main.ChapterTransition;
 import com.accounting.main.Dialogue;
 import com.accounting.main.DialogueSystem;
 import com.accounting.main.LearningImageManager;
 
 public class Chapter1Controller {
+	
+	
 
     @FXML
     private AnchorPane anchorPane; // Root container (AnchorPane)
@@ -53,6 +59,8 @@ public class Chapter1Controller {
     @FXML
     private AnchorPane accountsPane;
     @FXML
+    private AnchorPane rootPane;
+    @FXML
     private ImageView characterImage;
 
 
@@ -65,7 +73,7 @@ public class Chapter1Controller {
     private ImageView zoomImageView;
     @FXML
     private Button closeZoomButton;
-
+    private LearningImageManager learningImageManager;
     private boolean imagesAdded = false;
     
     
@@ -74,8 +82,12 @@ public class Chapter1Controller {
     private String brandName;
     private boolean chapter0;
     
+    
+    
+    
     public void initialize() {
         readGameProgressFromFile("gameProgress.txt");
+        
         
         accountsPane.setTranslateX(-500); 
         isPaneOpen = false;
@@ -87,6 +99,16 @@ public class Chapter1Controller {
         
         zoomImageView.setVisible(false);
         learningImageManager = new LearningImageManager(scrollableImageContainer, zoomImageView);
+        
+        Platform.runLater(() -> {
+            Scene scene = rootPane.getScene();
+            if (scene != null) {
+                ChapterTransition chapterTransition = new ChapterTransition(rootPane);
+                chapterTransition.displayChapterStartScreen(1);  
+            } else {
+                System.out.println("Scene is still null! Cannot display chapter.");
+            }
+        });
     }
     
     private void displayCurrentDialogue() {
@@ -238,28 +260,21 @@ public class Chapter1Controller {
 
   
     private void toggleAccountsPane() {
-    	TranslateTransition transition = new TranslateTransition(Duration.millis(300), accountsPane);
+        TranslateTransition transition = new TranslateTransition(Duration.millis(300), accountsPane);
 
         if (isPaneOpen) {
-        	transition.setToX(-500);
-            accountsPane.setTranslateX(-500);
+            transition.setToX(-500);
             accountsButton.setText("Open Accounts");
         } else {
-        	transition.setToX(0);
-            accountsPane.setTranslateX(0);
+            transition.setToX(0);
             accountsButton.setText("Close Accounts");
-        }transition.setToX(0);
+        }
+        transition.play();  
         isPaneOpen = !isPaneOpen;
     }
     
 
-    private LearningImageManager learningImageManager;
-
-    
-
-    // Logic to trigger learning images based on dialogue ID
     public void handleDialogueTrigger(int dialogueId) {
-        System.out.println("handleDialogueTrigger called with dialogueId: " + dialogueId);
         switch (dialogueId) {
             case 2:
                 learningImageManager.triggerImage("/Images/LearningImage/LearningImage101.png");
