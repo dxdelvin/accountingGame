@@ -4,8 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,12 +16,12 @@ import java.util.Map;
 
 import com.accounting.main.Dialogue;
 import com.accounting.main.DialogueSystem;
+import com.accounting.main.LearningImageManager;
 
 public class Chapter1Controller {
 
     @FXML
     private AnchorPane anchorPane; // Root container (AnchorPane)
-    
     @FXML
     private ImageView signBoard;  
     @FXML
@@ -47,27 +49,32 @@ public class Chapter1Controller {
     
     @FXML
     private AnchorPane accountsPane;
+    @FXML
+    private ImageView characterImage;
+
 
     @FXML
     private Button accountsButton;
     
+    
     private boolean isPaneOpen = false;
     
-    // Variables to hold game progress data
     private String brandName;
     private boolean chapter0;
     
     public void initialize() {
-        // Read data from the gameProgress.txt file
         readGameProgressFromFile("gameProgress.txt");
         
         accountsPane.setTranslateX(-500); 
         isPaneOpen = false;
         accountsButton.setOnAction(event -> toggleAccountsPane());
         
-        dialogueSystem = new DialogueSystem("chapter1.json", brandName); // Load the dialogue JSON
-        currentDialogueId = 1; // Start from the first dialogue
+        dialogueSystem = new DialogueSystem("chapter1.json", brandName, characterImage); // Load the dialogue JSON
+        currentDialogueId = 1; 
         displayCurrentDialogue();
+        
+        zoomImageView.setVisible(false);
+        learningImageManager = new LearningImageManager(scrollableImageContainer, zoomImageView);
     }
     
     private void displayCurrentDialogue() {
@@ -76,26 +83,24 @@ public class Chapter1Controller {
             return; // Handle error case if dialogue is not found
         }
 
-        dialogueLabel.setText(currentDialogue.getText()); // Set the dialogue text
-
-        // Handle different dialogue types
+        dialogueLabel.setText(currentDialogue.getText()); 
+        
         if (currentDialogue.getType().equals("Normal")) {
             optionButton1.setText("Next");
-            optionButton2.setVisible(false); // Hide second button for normal dialogues
-            inputField.setVisible(false); // Hide input field for normal dialogues
+            optionButton2.setVisible(false); 
+            inputField.setVisible(false); 
         } else if (currentDialogue.getType().equals("YesNo")) {
-            optionButton1.setText(currentDialogue.getOptions()[0]); // Set option 1 text (e.g., "Yes")
-            optionButton2.setText(currentDialogue.getOptions()[1]); // Set option 2 text (e.g., "No")
-            optionButton2.setVisible(true); // Show second option button
-            inputField.setVisible(false); // Hide input field for Yes/No dialogues
+            optionButton1.setText(currentDialogue.getOptions()[0]); 
+            optionButton2.setText(currentDialogue.getOptions()[1]);
+            optionButton2.setVisible(true); 
+            inputField.setVisible(false); 
         } else if (currentDialogue.getType().equals("Input")) {
             optionButton1.setText("Submit");
-            optionButton2.setVisible(false); // No second button
-            inputField.setVisible(true); // Show input field for Input dialogues
+            optionButton2.setVisible(false); 
+            inputField.setVisible(true); 
         }
     }
 
-    // This method handles the first option button (Yes/Next/Submit)
     @FXML
     private void onOption1Clicked() {
         Dialogue currentDialogue = dialogueSystem.getDialogue(currentDialogueId);
@@ -139,7 +144,7 @@ public class Chapter1Controller {
                 return;
             }
         }
-
+        handleDialogueTrigger(currentDialogueId);
         displayCurrentDialogue(); // Update the dialogue view after changing the ID
     }
 
@@ -231,5 +236,39 @@ public class Chapter1Controller {
             accountsButton.setText("Close Accounts");
         }
         isPaneOpen = !isPaneOpen;
+    }
+    
+    
+    // Learning Image
+    @FXML
+    private VBox scrollableImageContainer; // Scrollable area for learning images
+
+    @FXML
+    private ImageView zoomImageView; // Full-size zoom image view
+
+    private LearningImageManager learningImageManager;
+
+    
+
+    // Logic to trigger learning images based on dialogue ID
+    public void handleDialogueTrigger(int dialogueId) {
+        System.out.println("handleDialogueTrigger called with dialogueId: " + dialogueId);
+        switch (dialogueId) {
+            case 2:
+                System.out.println("Triggering LearningImage101.png");
+                learningImageManager.triggerImage("/Images/LearningImage/LearningImage101.png");
+                break;
+            case 3:
+                System.out.println("Triggering LearningImage102.png");
+                learningImageManager.triggerImage("/Images/LearningImage/LearningImage102.png");
+                break;
+            case 4:
+                System.out.println("Triggering LearningImage103.png");
+                learningImageManager.triggerImage("/Images/LearningImage/LearningImage103.png");
+                break;
+            default:
+                System.out.println("No image to trigger for dialogueId: " + dialogueId);
+                break;
+        }
     }
 }

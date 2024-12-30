@@ -1,18 +1,23 @@
 package com.accounting.main;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
-public class DialogueSystem {	
+public class DialogueSystem {
 
     private List<Dialogue> dialogues;
     private String brandName;
+    private ImageView characterImage;
 
-    // Modified constructor to accept a filename
-    public DialogueSystem(String filename, String brandName) {
-    	this.brandName = brandName;
+    // Modified constructor to accept a filename and an ImageView for the character
+    public DialogueSystem(String filename, String brandName, ImageView characterImage) {
+        this.brandName = brandName;
+        this.characterImage = characterImage;
         loadDialogues(filename);
     }
 
@@ -28,7 +33,8 @@ public class DialogueSystem {
             e.printStackTrace();
         }
     }
-    
+
+    // Replace placeholder "{BrandName}" in dialogues with the actual brand name
     private void replaceBrandNameInDialogues() {
         for (Dialogue dialogue : dialogues) {
             if (dialogue.getText().contains("{BrandName}")) {
@@ -38,15 +44,31 @@ public class DialogueSystem {
         }
     }
 
-    // Get a dialogue by ID
+    // Get a dialogue by ID and update the character image if available
     public Dialogue getDialogue(int id) {
-        return dialogues.stream()
-                .filter(dialogue -> dialogue.getId() == id)
+        Dialogue dialogue = dialogues.stream()
+                .filter(d -> d.getId() == id)
                 .findFirst()
                 .orElse(null);
+
+        if (dialogue != null && dialogue.getCharacterImagePath() != null) {
+            updateCharacterImage(dialogue.getCharacterImagePath());
+        }
+
+        return dialogue;
     }
 
-    // Helper class to match the root node of the JSON
+    
+    private void updateCharacterImage(String imagePath) {
+        try {
+            Image image = new Image(getClass().getResource(imagePath).toExternalForm());
+            characterImage.setImage(image);
+        } catch (Exception e) {
+            System.err.println("Error loading character image: " + imagePath);
+            e.printStackTrace();
+        }
+    }
+    
     private static class DialogueList {
         private List<Dialogue> dialogues;
 

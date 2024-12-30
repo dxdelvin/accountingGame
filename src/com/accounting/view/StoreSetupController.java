@@ -334,7 +334,7 @@ public class StoreSetupController {
         
         layoutData.put("chapter0", "true");
 
-        // Debugging output (Optional)
+        // Debugging 
         layoutData.forEach((key, value) -> System.out.println(key + ": " + value));
 
         // Save data using GameProgressManager

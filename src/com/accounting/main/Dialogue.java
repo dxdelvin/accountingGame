@@ -1,15 +1,31 @@
 package com.accounting.main;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Dialogue {
+
     private int id;
     private String type;
     private String text;
-    private Object nextId; // This will be an Integer or a Map depending on the nextId type
+    private String characterImagePath;
+    private Object nextId;
     private String[] options;
 
-    // Getters and Setters
+    // Default constructor
+    public Dialogue() {
+    }
+
+    // Optional constructor for manual initialization
+    public Dialogue(int id, String type, String text, String characterImagePath, Object nextId, String[] options) {
+        this.id = id;
+        this.type = type;
+        this.text = text;
+        this.characterImagePath = characterImagePath;
+        this.nextId = nextId;
+        this.options = options;
+    }
+
+    // Getters and setters
     public int getId() {
         return id;
     }
@@ -34,6 +50,14 @@ public class Dialogue {
         this.text = text;
     }
 
+    public String getCharacterImagePath() {
+        return characterImagePath;
+    }
+
+    public void setCharacterImagePath(String characterImagePath) {
+        this.characterImagePath = characterImagePath;
+    }
+
     public Object getNextId() {
         return nextId;
     }
@@ -49,4 +73,5 @@ public class Dialogue {
     public void setOptions(String[] options) {
         this.options = options;
     }
+
 }
