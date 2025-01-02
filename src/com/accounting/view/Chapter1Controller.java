@@ -2,6 +2,8 @@ package com.accounting.view;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +22,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 
+import com.accounting.main.Account;
+import com.accounting.main.AccountingPanel;
 import com.accounting.main.ChapterTransition;
 import com.accounting.main.Dialogue;
 import com.accounting.main.DialogueSystem;
@@ -82,7 +86,8 @@ public class Chapter1Controller {
     private String brandName;
     private boolean chapter0;
     
-    
+    @FXML
+    private VBox accountingVBox;
     
     
     public void initialize() {
@@ -109,6 +114,20 @@ public class Chapter1Controller {
                 System.out.println("Scene is still null! Cannot display chapter.");
             }
         });
+        
+        ObservableList<Account> defaultAccounts = FXCollections.observableArrayList(
+        	    new Account("Bank", "Asset", 1500.0),
+        	    new Account("Loans", "Liability", 1200.0)
+        	);
+
+        	ObservableList<Account> draggableAccounts = FXCollections.observableArrayList(
+        	    new Account("Cash", "Asset", 500.0),
+        	    new Account("Mortgage", "Liability", 800.0)
+        	);
+
+        	
+        	AccountingPanel accountingPanel = new AccountingPanel(defaultAccounts, draggableAccounts);
+        	accountingVBox.getChildren().add(accountingPanel);
     }
     
     private void displayCurrentDialogue() {

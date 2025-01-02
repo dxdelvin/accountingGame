@@ -75,6 +75,11 @@
       </TextField>
       <AnchorPane fx:id="accountsPane" prefHeight="707.0" prefWidth="502.0" style="-fx-background-color: lightgrey;">
          <children>
+            <Text layoutX="171.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Balance Sheet" textAlignment="CENTER" wrappingWidth="303.0">
+               <font>
+                  <Font size="42.0" />
+               </font>
+            </Text>
             <ImageView fx:id="zoomImageView" fitHeight="188.0" fitWidth="500.0" layoutY="538.0" pickOnBounds="true" preserveRatio="true" />
             <Text layoutX="100.0" layoutY="527.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lessons" textAlignment="CENTER" wrappingWidth="303.0">
                <font>
@@ -85,6 +90,11 @@
             <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="-1.0" layoutY="533.0" prefHeight="188.0" prefWidth="502.0">
                <content>
                   <VBox fx:id="scrollableImageContainer" prefHeight="179.0" prefWidth="501.0" />
+               </content>
+            </ScrollPane>
+            <ScrollPane fx:id="accountingScrollPane" layoutY="80.0" prefHeight="422.0" prefWidth="502.0">
+               <content>
+                  <VBox fx:id="accountingVBox" prefHeight="413.0" prefWidth="490.0" />
                </content>
             </ScrollPane>
          </children></AnchorPane>
