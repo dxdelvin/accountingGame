@@ -1,5 +1,8 @@
 package com.accounting.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -58,7 +61,7 @@ public class AccountingPanel extends VBox {
 		getChildren().addAll(tablesBox, draggableItemsPane, validateButton);
 
 		// Button action for validation
-		validateButton.setOnAction(e -> validateBalanceSheet());
+		validateButton.setOnAction(e -> validateBalanceSheet(draggableAccounts));
 
 		assetsData.addListener((ListChangeListener<Account>) change -> updateTotals());
 		equityLiabilitiesData.addListener((ListChangeListener<Account>) change -> updateTotals());
@@ -100,18 +103,31 @@ public class AccountingPanel extends VBox {
 			row.setOnContextMenuRequested(event -> {
 				if (!row.isEmpty()) {
 					ContextMenu contextMenu = new ContextMenu();
-					MenuItem deleteItem = new MenuItem("Delete");
-					deleteItem.setOnAction(e -> {
-						Account account = row.getItem();
-						tableData.remove(account); // Remove account from the table
-						addDraggableLabel((FlowPane) getChildren().get(1), account); // Restore draggable account
-					});
-					contextMenu.getItems().add(deleteItem);
-					contextMenu.show(row, event.getScreenX(), event.getScreenY());
-				}
-			});
-			return row;
+		            MenuItem deleteItem = new MenuItem("Delete");
+		            
+		            Account account = row.getItem();
+		            
+		            // Disable delete option for default accounts
+		            if (isDefaultAccount(account)) {
+		                deleteItem.setDisable(true); // Disable delete for default accounts
+		            } else {
+		                deleteItem.setDisable(false); // Enable delete for non-default accounts
+		                deleteItem.setOnAction(e -> {
+		                    tableData.remove(account); // Remove account from the table
+		                    addDraggableLabel((FlowPane) getChildren().get(1), account); // Restore draggable account
+		                });
+		            }
+		            
+		            contextMenu.getItems().add(deleteItem);
+		            contextMenu.show(row, event.getScreenX(), event.getScreenY());
+		        }
+		    });
+		    return row;
 		});
+		
+		
+
+
 
 		// Enable drag-and-drop functionality
 		table.setOnDragOver(event -> {
@@ -144,6 +160,11 @@ public class AccountingPanel extends VBox {
 		});
 
 		return table;
+	}
+	
+	private boolean isDefaultAccount(Account account) {
+	    // Check if the account is part of the default accounts
+	    return allAccounts.contains(account);
 	}
 
 	private FlowPane createDraggablePane(ObservableList<Account> accounts) {
@@ -191,58 +212,82 @@ public class AccountingPanel extends VBox {
 		equityLiabilitiesTotalLabel.setText("Total E&L: " + totalEquityAndLiabilities);
 	}
 
-	
-	private void validateBalanceSheet() {
-		boolean isOnlyDefaultAccounts = assetsData.stream().allMatch(allAccounts::contains)
-				&& equityLiabilitiesData.stream().allMatch(allAccounts::contains);
 
-		if (isOnlyDefaultAccounts) {
-			Alert alert = new Alert(Alert.AlertType.WARNING, "Please add or modify accounts before validating.",
-					ButtonType.OK);
-			alert.showAndWait();
-			return;
-		}
+	private void validateBalanceSheet(ObservableList<Account> draggableAccounts) {
+	    boolean isOnlyDefaultAccounts = assetsData.stream().allMatch(allAccounts::contains)
+	            && equityLiabilitiesData.stream().allMatch(allAccounts::contains);
 
-		boolean isCorrect = true;
-		StringBuilder errorMessages = new StringBuilder();
+	    if (isOnlyDefaultAccounts) {
+	        Alert alert = new Alert(Alert.AlertType.WARNING, "Please add or modify accounts before validating.",
+	                ButtonType.OK);
+	        alert.showAndWait();
+	        return;
+	    }
 
-		// Validate accounts in assetsData
-		for (Account account : assetsData) {
-			Account matchingAccount = findMatchingAccount(account);
-			if (matchingAccount == null) {
-				isCorrect = false;
-				errorMessages.append(account.getAccountName()).append(" in Assets has wrong values.\n");
-			} else if (!account.getType().equals(matchingAccount.getType())
-					|| Double.compare(account.getValue(), matchingAccount.getValue()) != 0) {
-				isCorrect = false;
-				errorMessages.append(account.getAccountName()).append(" in Assets has wrong values.\n");
-			}
-		}
+	    boolean isCorrect = true;
+	    StringBuilder errorMessages = new StringBuilder();
+	    List<String> usedAccounts = new ArrayList<>(); // To track used accounts
+	    List<String> usedTypes = new ArrayList<>(); // To track used account types
 
-		// Validate accounts in equityLiabilitiesData
-		for (Account account : equityLiabilitiesData) {
-			Account matchingAccount = findMatchingAccount(account);
-			if (matchingAccount == null) {
-				isCorrect = false;
-				errorMessages.append(account.getAccountName()).append(" in Liabilities has wrong values.\n");
-			} else if (!account.getType().equals(matchingAccount.getType())
-					|| Double.compare(account.getValue(), matchingAccount.getValue()) != 0) {
-				isCorrect = false;
-				errorMessages.append(account.getAccountName()).append(" in Liabilities has wrong values.\n");
-			}
-		}
+	    // Validate accounts in assetsData
+	    for (Account account : assetsData) {
+	        Account matchingAccount = findMatchingAccount(account);
+	        if (matchingAccount == null) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" in Assets has wrong values.\n");
+	        } else if (!account.getType().equals("Asset")) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" is in the wrong table (should be Asset).\n");
+	        } else if (Double.compare(account.getValue(), matchingAccount.getValue()) != 0) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" in Assets has wrong values.\n");
+	        }
+	        usedAccounts.add(account.getAccountName()); // Track the account usage
+	        usedTypes.add(account.getType()); // Track the account type usage
+	    }
 
-		// Display result
-		if (isCorrect) {
-			Alert alert = new Alert(Alert.AlertType.INFORMATION, "Good Job! Your balance sheet is correct.",
-					ButtonType.OK);
-			alert.showAndWait();
-		} else {
-			Alert alert = new Alert(Alert.AlertType.ERROR,
-					"Balance sheet is not correct. Errors:\n" + errorMessages.toString(), ButtonType.OK);
-			alert.showAndWait();
-		}
+	    // Validate accounts in equityLiabilitiesData
+	    for (Account account : equityLiabilitiesData) {
+	        Account matchingAccount = findMatchingAccount(account);
+	        if (matchingAccount == null) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" in Liabilities has wrong values.\n");
+	        } else if (!account.getType().equals("Liability")) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" is in the wrong table (should be Liability).\n");
+	        } else if (Double.compare(account.getValue(), matchingAccount.getValue()) != 0) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" in Liabilities has wrong values.\n");
+	        }
+	        usedAccounts.add(account.getAccountName()); // Track the account usage
+	        usedTypes.add(account.getType()); // Track the account type usage
+	    }
+
+	    // Ensure that all draggable accounts are used and have the correct type
+	    for (Account account : draggableAccounts) {
+	        if (!usedAccounts.contains(account.getAccountName())) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" is not used.\n");
+	        } else if (!usedTypes.contains(account.getType())) {
+	            isCorrect = false;
+	            errorMessages.append(account.getAccountName()).append(" is in the wrong table.\n");
+	        }
+	    }
+
+	    // Display result
+	    if (isCorrect) {
+	        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Good Job! Your balance sheet is correct.", ButtonType.OK);
+	        alert.showAndWait();
+	    } else {
+	        Alert alert = new Alert(Alert.AlertType.ERROR,
+	                "Balance sheet is not correct. Errors:\n" + errorMessages.toString(), ButtonType.OK);
+	        alert.showAndWait();
+	    }
 	}
+
+
+
+	
 
 	private Account findMatchingAccount(Account account) {
 		// Search for matching account in allAccounts
