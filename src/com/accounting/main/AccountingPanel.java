@@ -28,6 +28,7 @@ public class AccountingPanel extends VBox {
 	private Button validateButton;
 
 	public AccountingPanel(ObservableList<Account> defaultAccounts, ObservableList<Account> draggableAccounts) {
+		DialogueSystem.pauseDialogue();
 		// Merge default accounts and draggable accounts into one list
 		this.allAccounts = FXCollections.observableArrayList();
 		this.allAccounts.addAll(defaultAccounts);
@@ -212,8 +213,9 @@ public class AccountingPanel extends VBox {
 		equityLiabilitiesTotalLabel.setText("Total E&L: " + totalEquityAndLiabilities);
 	}
 
-
+	private boolean isValidationComplete = false;
 	private void validateBalanceSheet(ObservableList<Account> draggableAccounts) {
+
 	    boolean isOnlyDefaultAccounts = assetsData.stream().allMatch(allAccounts::contains)
 	            && equityLiabilitiesData.stream().allMatch(allAccounts::contains);
 
@@ -276,8 +278,21 @@ public class AccountingPanel extends VBox {
 
 	    // Display result
 	    if (isCorrect) {
+	    	DialogueSystem.resumeDialogue();
 	        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Good Job! Your balance sheet is correct.", ButtonType.OK);
 	        alert.showAndWait();
+
+	        validateButton.setVisible(false); // Hide the validate button
+	        Label successMessage = new Label("Validation Successful!");
+	        successMessage.setFont(new Font(16));
+	        getChildren().add(successMessage);
+
+	        // Move draggable accounts to default accounts
+	        allAccounts.addAll(draggableAccounts);
+	        draggableAccounts.clear();
+
+	        // Allow dialogue to proceed
+	        isValidationComplete = true;
 	    } else {
 	        Alert alert = new Alert(Alert.AlertType.ERROR,
 	                "Balance sheet is not correct. Errors:\n" + errorMessages.toString(), ButtonType.OK);

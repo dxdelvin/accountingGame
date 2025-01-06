@@ -43,9 +43,13 @@ public class DialogueSystem {
             }
         }
     }
+    
+    public static boolean isDialoguePaused = false;
 
-    // Get a dialogue by ID and update the character image if available
     public Dialogue getDialogue(int id) {
+    	if (isDialoguePaused) {
+            System.out.println("Dialogue is paused. Cannot proceed.");
+        }
         Dialogue dialogue = dialogues.stream()
                 .filter(d -> d.getId() == id)
                 .findFirst()
@@ -56,6 +60,14 @@ public class DialogueSystem {
         }
 
         return dialogue;
+    }
+    
+    public static void pauseDialogue() {
+        isDialoguePaused = true;
+    }
+
+    public static void resumeDialogue() {
+        isDialoguePaused = false;
     }
 
     

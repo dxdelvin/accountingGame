@@ -114,20 +114,7 @@ public class Chapter1Controller {
                 System.out.println("Scene is still null! Cannot display chapter.");
             }
         });
-        
-        ObservableList<Account> defaultAccounts = FXCollections.observableArrayList(
-        	    new Account("Bank", "Asset", 1500.0),
-        	    new Account("Loans", "Liability", 1200.0)
-        	);
-
-        	ObservableList<Account> draggableAccounts = FXCollections.observableArrayList(
-        	    new Account("Cash", "Asset", 500.0),
-        	    new Account("Mortgage", "Liability", 800.0)
-        	);
-
-        	
-        	AccountingPanel accountingPanel = new AccountingPanel(defaultAccounts, draggableAccounts);
-        	accountingVBox.getChildren().add(accountingPanel);
+       
     }
     
     private void displayCurrentDialogue() {
@@ -178,7 +165,15 @@ public class Chapter1Controller {
     }
 
     // This method moves to the next dialogue (based on the current dialogue's nextId)
+    private String question = "Answer the Question:";
     private void moveToNextDialogue(Dialogue currentDialogue) {
+    	if (DialogueSystem.isDialoguePaused) {
+    		if(!isPaneOpen) {
+        		toggleAccountsPane();
+        	}
+    		dialogueLabel.setText(question + " " + currentDialogue.getText());
+            return;  
+        }
         if (currentDialogue.getNextId() instanceof Integer) {
             currentDialogueId = (Integer) currentDialogue.getNextId(); // Move to the next dialogue if it's just an ID
         } else if (currentDialogue.getNextId() instanceof Map) {
@@ -292,16 +287,44 @@ public class Chapter1Controller {
         isPaneOpen = !isPaneOpen;
     }
     
+    private void loadAccountingPanel(ObservableList<Account> defaultAccounts, ObservableList<Account> draggableAccounts) {
+        // Clear the VBox before adding the accounting panel to prevent duplication
+        accountingVBox.getChildren().clear();
+
+        AccountingPanel accountingPanel = new AccountingPanel(defaultAccounts, draggableAccounts);
+
+        accountingVBox.getChildren().add(accountingPanel);
+
+        System.out.println("Accounting panel loaded with custom accounts.");
+    }
+
 
     public void handleDialogueTrigger(int dialogueId) {
         switch (dialogueId) {
             case 2:
+            	
                 learningImageManager.triggerImage("/Images/LearningImage/LearningImage101.png");
                 break;
-            case 3:
-                learningImageManager.triggerImage("/Images/LearningImage/LearningImage102.png");
+            case 10:
+            	if(!isPaneOpen) {
+            		toggleAccountsPane();
+            	}
+            	ObservableList<Account> defaultAccounts1 = FXCollections.observableArrayList(
+                        new Account("Bank", "Asset", 1200.0),
+                        new Account("Loans", "Liability", 1200.0)
+                    );
+
+                    ObservableList<Account> draggableAccounts1 = FXCollections.observableArrayList(
+                        new Account("Cash", "Asset", 800.0),
+                        new Account("Mortgage", "Liability", 800.0)
+                    );
+
+                    loadAccountingPanel(defaultAccounts1, draggableAccounts1);
+                    question = "Complete the Balance Sheet";
+                    
+//                learningImageManager.triggerImage("/Images/LearningImage/LearningImage102.png");
                 break;
-            case 4:
+            case 12:
                 learningImageManager.triggerImage("/Images/LearningImage/LearningImage103.png");
                 break;
             default:
