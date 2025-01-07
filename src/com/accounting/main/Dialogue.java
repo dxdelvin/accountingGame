@@ -1,29 +1,22 @@
 package com.accounting.main;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Dialogue {
-
     private int id;
     private String type;
     private String text;
     private String characterImagePath;
-    private Object nextId;
+    private Object nextId;  // This is for handling cases where it could be an integer or a map
     private String[] options;
+    private int nextIdCorrect;  // For Input type
+    private int nextIdIncorrect; // For incorrect path
+    private String correctAnswer;
 
     // Default constructor
-    public Dialogue() {
-    }
-
-    // Optional constructor for manual initialization
-    public Dialogue(int id, String type, String text, String characterImagePath, Object nextId, String[] options) {
-        this.id = id;
-        this.type = type;
-        this.text = text;
-        this.characterImagePath = characterImagePath;
-        this.nextId = nextId;
-        this.options = options;
-    }
+    public Dialogue() {}
 
     // Getters and setters
     public int getId() {
@@ -74,4 +67,27 @@ public class Dialogue {
         this.options = options;
     }
 
+    public int getNextIdCorrect() {
+        return nextIdCorrect;
+    }
+
+    public void setNextIdCorrect(int nextIdCorrect) {
+        this.nextIdCorrect = nextIdCorrect;
+    }
+
+    public int getNextIdIncorrect() {
+        return nextIdIncorrect;
+    }
+
+    public void setNextIdIncorrect(int nextIdIncorrect) {
+        this.nextIdIncorrect = nextIdIncorrect;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
 }

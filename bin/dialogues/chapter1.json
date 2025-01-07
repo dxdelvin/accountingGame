@@ -1,23 +1,294 @@
 {
   "dialogues": [
     {"id": 1, "type": "Normal", "text": "Welcome to {BrandName} Store!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 2},
-    {"id": 2, "type": "Normal", "text": "You're starting a business!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 3},
-    {"id": 3, "type": "YesNo", "text": "You're going to earn billions in business!", "options": ["Yes", "No"], "characterImagePath": "/Images/Store/charHappy.png", "nextId": {"Yes": 4, "No": 5}},
-    {"id": 4, "type": "Normal", "text": "Yeah, we need a scorecard to maintain our transactions!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 7},
-    {"id": 5, "type": "Normal", "text": "Oh, come on, be positive!", "nextId": 6},
-    {"id": 6, "type": "Normal", "text": "We do need a scorecard to maintain our transactions though!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 7},
-    {"id": 7, "type": "YesNo", "text": "You should check your piggy bank.", "options": ["Fine", "Why?"], "characterImagePath": "/Images/Store/Char@2x.png", "nextId": {"Fine": 8, "Why?": 9}},
-    {"id": 8, "type": "Normal", "text": "You found 5 Euros!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 10},
-    {"id": 9, "type": "Normal", "text": "You need to invest in your business, so you found 5 Euros in your piggy bank.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 10},
-    {"id": 10, "type": "Normal", "text": "We should name something instead of Piggy Bank.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 11},
-    {"id": 11, "type": "Normal", "text": "How about 'Original Investment'?", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 12},
-    {"id": 12, "type": "YesNo", "text": "Who owns the Original Investment?", "options": ["You?", "Myself!"], "characterImagePath": "/Images/Store/Char@2x.png", "nextId": {"You?": 13, "Myself!": 14}},
-    {"id": 13, "type": "Normal", "text": "Thanks! But it's your hard-earned money, so you own it, not me!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 15},
-    {"id": 14, "type": "Normal", "text": "Correct!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 15},
-    {"id": 15, "type": "Normal", "text": "We need to put this in the scoreboard.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 16},
-    {"id": 16, "type": "Normal", "text": "So this should be on the right side of your scoreboard.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 17},
-    {"id": 17, "type": "Normal", "text": "There's a rule in a scoreboard.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 18},
-    {"id": 18, "type": "Normal", "text": "ALWAYS REMEMBER IT!!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 19},
-    {"id": 19, "type": "Normal", "text": "The left side always equals the right side.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 20}
+    {"id": 2, "type": "Normal", "text": "Ready to start your business journey?", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 3},
+    {"id": 3, "type": "YesNo", "text": "Do you think you'll make millions?", "options": ["Yes", "No"], "characterImagePath": "/Images/Store/charHappy.png", "nextId": {"Yes": 4, "No": 5}},
+    {"id": 4, "type": "Normal", "text": "That’s the spirit! Let’s plan your success.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 6},
+    {"id": 5, "type": "Normal", "text": "Stay positive! Success is closer than you think.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 6},
+    {"id": 6, "type": "Normal", "text": "Tracking our transactions is important.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 7},
+    {"id": 7, "type": "Normal", "text": "We don’t want to lose the money.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 8},
+    {"id": 8, "type": "Normal", "text": "So we are going to maintain our own scorecard!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 9},
+    {"id": 9, "type": "YesNo", "text": "Did you check your savings?", "options": ["Yes", "Why?"], "characterImagePath": "/Images/Store/charPiggy.png", "nextId": {"Yes": 10, "Why?": 11}},
+    {"id": 10, "type": "Normal", "text": "Great! You found 5 Euros to invest.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 12},
+    {"id": 11, "type": "Normal", "text": "You’ll need every coin to grow your business. Here’s 5 Euros from your savings.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 12},
+    {"id": 12, "type": "Normal", "text": "Let’s rename 'Piggy Bank' to something cooler.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 13},
+    {"id": 13, "type": "Normal", "text": "How about 'Original Investment'?", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 14},
+    {"id": 14, "type": "YesNo", "text": "Who owns the Original Investment?", "options": ["You?", "Me!"], "characterImagePath": "/Images/Store/Char@2x.png", "nextId": {"You?": 15, "Me!": 16}},
+    {"id": 15, "type": "Normal", "text": "Thanks! But it’s your money, so you own it!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 17},
+    {"id": 16, "type": "Normal", "text": "Exactly! It’s your hard-earned cash.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 17},
+    {"id": 17, "type": "Normal", "text": "Let’s add it to your scoreboard.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 18},
+    {"id": 18, "type": "Normal", "text": "It’ll go on the right side. as You Own It!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 19},
+    {"id": 19, "type": "Normal", "text": "The Cash Goes on Left Side as You Have It!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 20},
+    {"id": 20, "type": "Normal", "text": "Here’s a golden rule:", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 21},
+    {"id": 21, "type": "Normal", "text": "The left side always equals the right side.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 22},
+    {"id": 22, "type": "Normal", "text": "Let’s try that in Practice!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 23},
+    {"id": 23, "type": "Normal", "text": "You need to Drag Accounts and Balance the Balance Sheet!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 24},
+    {"id": 24, "type": "Normal", "text": "Q: You got 5 Euro from Piggy Bank!", "characterImagePath": "/Images/Store/charThinking.png", "nextId": 25},
+	{"id": 25, "type": "Normal", "text": "Great Job Buddy!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 26},
+	{
+	  "id": 26,
+	  "type": "YesNo",
+	  "text": "So, 'what we have' is called?",
+	  "options": ["Asset", "Equity & Liability"],
+	  "characterImagePath": "/Images/Store/charThinking.png",
+	  "nextId": {
+	    "Asset": 27,
+	    "Equity & Liability": 28
+	  }
+	},
+	{
+	  "id": 27,
+	  "type": "Normal",
+	  "text": "That's Correct!",
+	  "characterImagePath": "/Images/Store/charHappy.png",
+	  "nextId": 29
+	},
+	{
+	  "id": 28,
+	  "type": "Normal",
+	  "text": "No, It's called Asset because we have it!",
+	  "characterImagePath": "/Images/Store/charSad.png",
+	  "nextId": 29
+	},
+	{
+	  "id": 29,
+	  "type": "YesNo",
+	  "text": "And, what about the phrase 'Who owns it'?",
+	  "options": ["Asset", "Equity & Liability"],
+	  "characterImagePath": "/Images/Store/charThinking.png",
+	  "nextId": {
+	    "Asset": 30,
+	    "Equity & Liability": 31
+	  }
+	},
+	{
+	  "id": 30,
+	  "type": "Normal",
+	  "text": "No, It's called Equity & Liability!",
+	  "characterImagePath": "/Images/Store/charSad.png",
+	  "nextId": 32
+	},
+	{
+	  "id": 31,
+	  "type": "Normal",
+	  "text": "That's Correct!",
+	  "characterImagePath": "/Images/Store/charHappy.png",
+	  "nextId": 32
+	},
+	{
+	  "id": 32,
+	  "type": "Normal",
+	  "text": "Equity is the value left over.",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 33
+	},
+	{
+	  "id": 33,
+	  "type": "Normal",
+	  "text": "Liability: Any debt your company owes others.",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 34
+	},
+	{
+	  "id": 34,
+	  "type": "Normal",
+	  "text": "Well! I think to start up our business, we need stuff to buy.",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 35
+	},
+	{
+	  "id": 35,
+	  "type": "Normal",
+	  "text": "5 Euro doesn’t look enough!!",
+	  "characterImagePath": "/Images/Store/charSad.png",
+	  "nextId": 36
+	},
+	{
+	  "id": 36,
+	  "type": "Normal",
+	  "text": "WE NEED LOAN!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 37
+	},
+	{
+	  "id": 37,
+	  "type": "YesNo",
+	  "text": "Kids’ favourite banker is?",
+	  "options": ["Parents", "Neighbours"],
+	  "characterImagePath": "/Images/Store/charThinking.png",
+	  "nextId": {
+	    "Parents": 38,
+	    "Neighbours": 39
+	  }
+	},
+	{
+	  "id": 38,
+	  "type": "Normal",
+	  "text": "Yeah, let's ask Mom for 10 Euro!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 40
+	},
+	{
+	  "id": 39,
+	  "type": "Normal",
+	  "text": "They won’t lend me 10 Euro, better ask my Mom!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 40
+	},
+	{
+	  "id": 40,
+	  "type": "Normal",
+	  "text": "Thanks Mom for the 10 Euro!!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 41
+	},
+	{
+	  "id": 41,
+	  "type": "Normal",
+	  "text": "Well, my Mom said it’s not a gift; it’s a loan, so she wants it back with interest.",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 42
+	},
+	{
+	  "id": 42,
+	  "type": "Normal",
+	  "text": "So that’s our first Liability in our company!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 43
+	},
+	{
+	  "id": 43,
+	  "type": "Normal",
+	  "text": "I will call that Notes Payable.",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 44
+	},
+	{
+	  "id": 44,
+	  "type": "Normal",
+	  "text": "Well, remember another term: Assets = Liability + Owner’s Equity.",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 45
+	},
+	{
+	  "id": 45,
+	  "type": "YesNo",
+	  "text": "Never forget it!",
+	  "options": ["OK!", "Ok!"],
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": {
+	    "OK!": 46,
+	    "Ok!": 46
+	  }
+	},
+	{
+	  "id": 46,
+	  "type": "Normal",
+	  "text": "Good! Let’s go for some shopping now!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId":47
+	},
+	{
+	  "id": 47,
+	  "type": "Normal",
+	  "text": "We need:",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 48
+	},
+	{
+	  "id": 48,
+	  "type": "Normal",
+	  "text": "50 lemons",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 49
+	},
+	{
+	  "id": 49,
+	  "type": "Normal",
+	  "text": "5 kilos of sugar",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 50
+	},
+	{
+	  "id": 50,
+	  "type": "Normal",
+	  "text": "2 gallons of water",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 51
+	},
+	{
+	  "id": 51,
+	  "type": "Normal",
+	  "text": "Hey look, it's Mr. Pappu Laden!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 52
+	},
+	{
+	  "id": 52,
+	  "type": "Normal",
+	  "text": "Hallo! Mr. Pappu!! Wie viel für 1 Limonade?",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 53
+	},
+	{
+	  "id": 53,
+	  "type": "Normal",
+	  "text": "Ok! Und wie viel für 1 Kilo Zucker?",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 54
+	},
+	{
+	  "id": 54,
+	  "type": "Normal",
+	  "text": "And what about 1 gallon of water?",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 55
+	},
+	{
+	  "id": 55,
+	  "type": "Normal",
+	  "text": "Oh, free?? Thank you so much!!",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 56
+	},
+	{
+	  "id": 56,
+	  "type": "Normal",
+	  "text": "Ok, let's calculate how much we need him to pay.",
+	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "nextId": 57
+	},
+	{
+       "id": 57,
+       "type": "Input",
+       "text": "How much do you think 50 lemons will cost?",
+       "correctAnswer": "10",
+       "options": [],
+       "nextIdCorrect": 58,
+       "nextIdIncorrect": 59,
+       "characterImagePath": "/Images/Store/Char@2x.png"
+   },
+   {
+       "id": 58,
+       "type": "Normal",
+       "text": "Good!",
+       "characterImagePath": "/Images/Store/Char@2x.png",
+       "nextId": 60
+   },
+   {
+       "id": 59,
+       "type": "Normal",
+       "text": "No! It costs 10 Euro!",
+       "characterImagePath": "/Images/Store/Char@2x.png",
+       "nextId": 60
+   },
+   {
+       "id": 60,
+       "type": "Normal",
+       "text": "Let's move on to the next item.",
+       "characterImagePath": "/Images/Store/Char@2x.png"
+   }
+
+
   ]
 }
