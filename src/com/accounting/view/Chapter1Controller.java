@@ -88,6 +88,8 @@ public class Chapter1Controller {
     @FXML
     private VBox accountingVBox;
     
+    private boolean chapter0;
+    
     
     public void initialize() {
         readGameProgressFromFile("gameProgress.txt");
@@ -127,11 +129,14 @@ public class Chapter1Controller {
                     String key = data[0].trim();
                     String value = data[1].trim();
 
-                    // Parse game progress data
+                    
                     switch (key) {
                         case "Brand Name":
                             brandName = value;
                             break;
+                        case "chapter0":
+                        	chapter0 = Boolean.parseBoolean(value);
+                        	break;
                         case "SignBoard":
                             setPosition(signBoard, value);
                             break;
@@ -238,7 +243,6 @@ public class Chapter1Controller {
 
 
 
-    // This method handles the second option button (Yes/No)
     @FXML
     private void onOption2Clicked() {
         Dialogue currentDialogue = dialogueSystem.getDialogue(currentDialogueId);
@@ -337,6 +341,23 @@ public class Chapter1Controller {
                     
 //                learningImageManager.triggerImage("/Images/LearningImage/LearningImage102.png");
                 break;
+            case 44:
+            	if(!isPaneOpen) {
+            		toggleAccountsPane();
+            	}
+            	ObservableList<Account> defaultAccounts2 = FXCollections.observableArrayList(
+            			new Account("Cash", "Asset", 5),
+                        new Account("Original Investment", "Liability", 5)
+                    );
+
+                    ObservableList<Account> draggableAccounts2 = FXCollections.observableArrayList(
+                        new Account("Cash", "Asset", 10),
+                        new Account("Notes Payable", "Liability", 10)
+                    );
+
+                    loadAccountingPanel(defaultAccounts2, draggableAccounts2);
+                    question = "Update Cash and Notes Payable at Right Place!";
+            	break;
             default:
                 break;
         }

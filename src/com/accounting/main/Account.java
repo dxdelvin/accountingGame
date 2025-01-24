@@ -1,18 +1,19 @@
 package com.accounting.main;
 
 import java.util.Objects;
-
 import javafx.beans.property.*;
 
 public class Account {
     private final StringProperty accountName;
     private final StringProperty type;
     private final DoubleProperty value;
+    private double originalValue; // Added missing declaration
 
     public Account(String accountName, String type, double value) {
         this.accountName = new SimpleStringProperty(accountName);
         this.type = new SimpleStringProperty(type);
         this.value = new SimpleDoubleProperty(value);
+        this.originalValue = value;
     }
 
     public String getAccountName() {
@@ -51,20 +52,26 @@ public class Account {
         return value;
     }
 
+    public double getOriginalValue() {
+        return originalValue;
+    }
+
+    public void setOriginalValue(double originalValue) {
+        this.originalValue = originalValue;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Account account = (Account) obj;
-        return accountName.equals(account.accountName) &&
-               type.equals(account.type) &&
-               Double.compare(value.get(), account.value.get()) == 0; // Use `.get()` to extract `double` value
+        return Double.compare(account.originalValue, originalValue) == 0 &&
+               Objects.equals(accountName.get(), account.accountName.get()) &&
+               Objects.equals(type.get(), account.type.get());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountName, type, value.get()); // Use `.get()` to extract `double` value
+        return Objects.hash(accountName.get(), type.get(), originalValue);
     }
-
-
 }

@@ -166,14 +166,14 @@
 	{
 	  "id": 44,
 	  "type": "Normal",
-	  "text": "Well, remember another term: Assets = Liability + Owner’s Equity.",
+	  "text": "Q: You got a 10 Loan From Mom! Balance the sheet!",
 	  "characterImagePath": "/Images/Store/Char@2x.png",
 	  "nextId": 45
 	},
 	{
 	  "id": 45,
 	  "type": "YesNo",
-	  "text": "Never forget it!",
+	  "text": "Well, remember another term: Assets = Liability + Owner’s Equity. Never forget it!",
 	  "options": ["OK!", "Ok!"],
 	  "characterImagePath": "/Images/Store/Char@2x.png",
 	  "nextId": {
@@ -266,28 +266,46 @@
        "options": [],
        "nextIdCorrect": 58,
        "nextIdIncorrect": 59,
-       "characterImagePath": "/Images/Store/Char@2x.png"
+       "characterImagePath": "/Images/Store/charThinking.png"
    },
    {
        "id": 58,
        "type": "Normal",
-       "text": "Good!",
-       "characterImagePath": "/Images/Store/Char@2x.png",
+       "text": "Its Correct!",
+       "characterImagePath": "/Images/Store/CharHappy.png",
        "nextId": 60
    },
    {
        "id": 59,
        "type": "Normal",
        "text": "No! It costs 10 Euro!",
-       "characterImagePath": "/Images/Store/Char@2x.png",
+       "characterImagePath": "/Images/Store/CharSad.png",
        "nextId": 60
    },
    {
-       "id": 60,
-       "type": "Normal",
-       "text": "Let's move on to the next item.",
-       "characterImagePath": "/Images/Store/Char@2x.png"
-   }
+      "id": 60,
+      "type": "Input",
+      "text": "How much do you think 5kg Sugar will cost?",
+      "correctAnswer": "2",
+      "options": [],
+      "nextIdCorrect": 61,
+      "nextIdIncorrect": 62,
+      "characterImagePath": "/Images/Store/charThinking.png"
+  },
+  {
+     "id": 61,
+     "type": "Normal",
+     "text": "Good!",
+     "characterImagePath": "/Images/Store/charHappy.png",
+     "nextId": 63
+ },
+ {
+     "id": 62,
+     "type": "Normal",
+     "text": "No! It costs 10 Euro!",
+     "characterImagePath": "/Images/Store/charSad.png",
+     "nextId": 63
+ }  
 
 
   ]

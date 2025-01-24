@@ -84,10 +84,10 @@ public class StoreSetupController {
         // Populate dialogues
         dialogues.add(new Dialogue("Hi Kid Chef! (Click here to Continue)", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
         dialogues.add(new Dialogue("You wanna sell some limonade?", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
-        dialogues.add(new Dialogue("And wanna earn viellll GELDDDD", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
-        dialogues.add(new Dialogue("COOL!", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
+        dialogues.add(new Dialogue("And wanna earn a lot of GELDDDD!", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
+        dialogues.add(new Dialogue("COOL! then lets Get Started!", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
         dialogues.add(new Dialogue("So Can You see Your Store Equipments", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
-        dialogues.add(new Dialogue("I Found them from Garage", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
+        dialogues.add(new Dialogue("I Found them from Your Garage", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
         dialogues.add(new Dialogue("So Click and Drag to Red Box And Start Building It!", new Image(getClass().getResource("/Images/Store/Char@2x.png").toExternalForm())));
 
         // Set the initial dialogue and character image
@@ -312,7 +312,7 @@ public class StoreSetupController {
             characterDialogue.setText("Great Name Choice!");
             isBrandNameEntered = true;
             
-            dialogues.add(new Dialogue("Sehr Toll! Lets sell some LIMONADE!", new Image(getClass().getResource("/Images/Store/charHappy.png").toExternalForm())));
+            dialogues.add(new Dialogue("Lets sell some LIMONADE!", new Image(getClass().getResource("/Images/Store/charHappy.png").toExternalForm())));
             currentDialogueIndex++;
             displayCurrentDialogue();
             

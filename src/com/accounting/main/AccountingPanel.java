@@ -18,300 +18,304 @@ import javafx.util.converter.DoubleStringConverter;
 
 public class AccountingPanel extends VBox {
 
-	private TableView<Account> assetsTable;
-	private TableView<Account> equityLiabilitiesTable;
-	private ObservableList<Account> allAccounts; // Merged list of default and draggable accounts
-	private ObservableList<Account> assetsData;
-	private ObservableList<Account> equityLiabilitiesData;
-	private Label assetsTotalLabel;
-	private Label equityLiabilitiesTotalLabel;
-	private Button validateButton;
-
-	public AccountingPanel(ObservableList<Account> defaultAccounts, ObservableList<Account> draggableAccounts) {
-		DialogueSystem.pauseDialogue();
-		// Merge default accounts and draggable accounts into one list
-		this.allAccounts = FXCollections.observableArrayList();
-		this.allAccounts.addAll(defaultAccounts);
-		this.allAccounts.addAll(draggableAccounts);
-
-		// Separate accounts into Assets and Equity & Liabilities based on type
-		this.assetsData = FXCollections.observableArrayList();
-		this.equityLiabilitiesData = FXCollections.observableArrayList();
-
-		// Initialize components
-		this.assetsTable = createTableView("Assets", assetsData);
-		this.equityLiabilitiesTable = createTableView("Equity & Liabilities", equityLiabilitiesData);
-		FlowPane draggableItemsPane = createDraggablePane(draggableAccounts);
+    private TableView<Account> assetsTable;
+    private TableView<Account> equityLiabilitiesTable;
+    private ObservableList<Account> allAccounts;
+    private ObservableList<Account> assetsData;
+    private ObservableList<Account> equityLiabilitiesData;
+    private Label assetsTotalLabel;
+    private Label equityLiabilitiesTotalLabel;
+    private Button validateButton;
+    private Label successLabel;
+    private ObservableList<Account> draggableAccounts;
 
 
-		assetsTotalLabel = new Label("Total A: 0");
-		equityLiabilitiesTotalLabel = new Label("Total E&L: 0");
-		assetsTotalLabel.setFont(new Font(16));
-		equityLiabilitiesTotalLabel.setFont(new Font(16));
-
-		this.validateButton = new Button("Validate");
-
-		// Layout configuration
-		setSpacing(10);
-		setPadding(new Insets(10));
-
-		HBox tablesBox = new HBox(10, new VBox(new Label("Assets"), assetsTable, assetsTotalLabel),
-				new VBox(new Label("Equity & Liabilities"), equityLiabilitiesTable, equityLiabilitiesTotalLabel));
-		tablesBox.setPadding(new Insets(10));
-
-		getChildren().addAll(tablesBox, draggableItemsPane, validateButton);
-
-		// Button action for validation
-		validateButton.setOnAction(e -> validateBalanceSheet(draggableAccounts));
-
-		assetsData.addListener((ListChangeListener<Account>) change -> updateTotals());
-		equityLiabilitiesData.addListener((ListChangeListener<Account>) change -> updateTotals());
-
-		// Populate tables with default accounts initially
-		populateDefaultAccounts(defaultAccounts);
-		
-		getStylesheets().add(getClass().getResource("/CSS/style.css").toExternalForm());
-
-	}
-
-	private TableView<Account> createTableView(String tableTitle, ObservableList<Account> tableData) {
-		
-		TableView<Account> table = new TableView<>();
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-		table.setItems(tableData);
-
-		TableColumn<Account, String> accountNameCol = new TableColumn<>("Account Name");
-		accountNameCol.setCellValueFactory(data -> data.getValue().accountNameProperty());
-
-		TableColumn<Account, Double> valueCol = new TableColumn<>("Value");
-		valueCol.setCellValueFactory(data -> data.getValue().valueProperty().asObject());
-		valueCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter())); // Editable cell
-		valueCol.setOnEditCommit(event -> {
-			Account account = event.getRowValue();
-			account.setValue(event.getNewValue());
-			updateTotals(); // Update totals after editing a value
-		});
-
-		table.getColumns().addAll(accountNameCol, valueCol);
-		table.setPrefHeight(300);
-		table.setPrefWidth(300);
-		table.setEditable(true); // Make the table editable
-
-		// Add delete functionality for non-default rows
-		table.setRowFactory(tv -> {
-			TableRow<Account> row = new TableRow<>();
-			row.setOnContextMenuRequested(event -> {
-				if (!row.isEmpty()) {
-					ContextMenu contextMenu = new ContextMenu();
-		            MenuItem deleteItem = new MenuItem("Delete");
-		            
-		            Account account = row.getItem();
-		            
-		            // Disable delete option for default accounts
-		            if (isDefaultAccount(account)) {
-		                deleteItem.setDisable(true); // Disable delete for default accounts
-		            } else {
-		                deleteItem.setDisable(false); // Enable delete for non-default accounts
-		                deleteItem.setOnAction(e -> {
-		                    tableData.remove(account); // Remove account from the table
-		                    addDraggableLabel((FlowPane) getChildren().get(1), account); // Restore draggable account
-		                });
-		            }
-		            
-		            contextMenu.getItems().add(deleteItem);
-		            contextMenu.show(row, event.getScreenX(), event.getScreenY());
-		        }
-		    });
-		    return row;
-		});
-		
-		
+    public AccountingPanel(ObservableList<Account> defaultAccounts, ObservableList<Account> draggableAccounts) {
+        DialogueSystem.pauseDialogue();
+        this.draggableAccounts = draggableAccounts;
+        this.allAccounts = FXCollections.observableArrayList();
+        this.allAccounts.addAll(defaultAccounts.stream()
+            .map(account -> new Account(account.getAccountName(), account.getType(), account.getValue()))
+            .toList());
 
 
+        // Consolidate duplicates
+        ObservableList<Account> uniqueDraggableAccounts = FXCollections.observableArrayList();
+        for (Account draggableAccount : draggableAccounts) {
+            Account matchingDefaultAccount = findMatchingAccount(draggableAccount, defaultAccounts);
+            if (matchingDefaultAccount != null) {
+                matchingDefaultAccount.setValue(matchingDefaultAccount.getValue() + draggableAccount.getValue());
+            } else {
+                uniqueDraggableAccounts.add(draggableAccount);
+            }
+        }
 
-		// Enable drag-and-drop functionality
-		table.setOnDragOver(event -> {
-			if (event.getDragboard().hasString()) {
-				event.acceptTransferModes(TransferMode.MOVE);
-			}
-			event.consume();
-		});
+        this.allAccounts.addAll(uniqueDraggableAccounts);
 
-		table.setOnDragDropped(event -> {
-			String data = event.getDragboard().getString();
-			String[] accountData = data.split(":");
-			String name = accountData[0];
-			String type = accountData[1];
+        this.assetsData = FXCollections.observableArrayList();
+        this.equityLiabilitiesData = FXCollections.observableArrayList();
 
-			// Add dragged account to the appropriate table (Assets or Equity & Liabilities)
-			Account account = new Account(name, type, 0.0); // Default value 0.0, user will enter it
-			if (table == assetsTable) {
-				assetsData.add(account);
-			} else {
-				equityLiabilitiesData.add(account);
-			}
+        this.assetsTable = createTableView("Assets", assetsData);
+        this.equityLiabilitiesTable = createTableView("Equity & Liabilities", equityLiabilitiesData);
+        FlowPane draggableItemsPane = createDraggablePane(uniqueDraggableAccounts);
 
-			// Remove the dragged label from the draggable pane
-			FlowPane draggablePane = (FlowPane) getChildren().get(1); // Assuming draggable pane is the second child
-			draggablePane.getChildren().removeIf(node -> ((Label) node).getText().equals(name));
+        assetsTotalLabel = new Label("Total A: 0");
+        equityLiabilitiesTotalLabel = new Label("Total E&L: 0");
+        assetsTotalLabel.setFont(new Font(16));
+        equityLiabilitiesTotalLabel.setFont(new Font(16));
 
-			event.setDropCompleted(true);
-			event.consume();
-		});
+        this.validateButton = new Button("Validate");
 
-		return table;
-	}
-	
-	private boolean isDefaultAccount(Account account) {
-	    // Check if the account is part of the default accounts
-	    return allAccounts.contains(account);
-	}
+        setSpacing(10);
+        setPadding(new Insets(10));
 
-	private FlowPane createDraggablePane(ObservableList<Account> accounts) {
-		FlowPane pane = new FlowPane();
-		pane.setHgap(10);
-		pane.setVgap(10);
+        HBox tablesBox = new HBox(10, new VBox(new Label("Assets"), assetsTable, assetsTotalLabel),
+                new VBox(new Label("Equity & Liabilities"), equityLiabilitiesTable, equityLiabilitiesTotalLabel));
+        tablesBox.setPadding(new Insets(10));
 
-		for (Account account : accounts) {
-			addDraggableLabel(pane, account);
-		}
+        getChildren().addAll(tablesBox, draggableItemsPane, validateButton);
 
-		return pane;
-	}
+        validateButton.setOnAction(e -> validateBalanceSheet(uniqueDraggableAccounts));
 
-	private void addDraggableLabel(FlowPane pane, Account account) {
-		Label accountLabel = new Label(account.getAccountName());
-		accountLabel.setStyle("-fx-border-color: black; -fx-padding: 5px;");
-		accountLabel.setOnDragDetected(event -> {
-			Dragboard db = accountLabel.startDragAndDrop(TransferMode.MOVE);
-			ClipboardContent content = new ClipboardContent();
-			content.putString(account.getAccountName() + ":" + account.getType());
-			db.setContent(content);
-			event.consume();
-		});
+        assetsData.addListener((ListChangeListener<Account>) change -> updateTotals());
+        equityLiabilitiesData.addListener((ListChangeListener<Account>) change -> updateTotals());
 
-		pane.getChildren().add(accountLabel);
-	}
+        populateDefaultAccounts(defaultAccounts);
+
+        this.successLabel = new Label();
+        successLabel.setFont(new Font(16));
+        successLabel.setStyle("-fx-text-fill: green;");
+        successLabel.setVisible(false); // Initially hidden
+
+        // Add success label after validateButton, not duplicating any children list
+        getChildren().add(successLabel);
+
+        validateButton.setOnAction(e -> validateBalanceSheet(uniqueDraggableAccounts));
+
+        getStylesheets().add(getClass().getResource("/CSS/style.css").toExternalForm());
+    }
+
+
+    
+    private FlowPane createDraggablePane(ObservableList<Account> accounts) {
+        FlowPane pane = new FlowPane();
+        pane.setHgap(10);
+        pane.setVgap(10);
+
+        // Create draggable labels for each account
+        for (Account account : accounts) {
+            addDraggableLabel(pane, account);
+        }
+
+        return pane;
+    }
+
+    private void addDraggableLabel(FlowPane pane, Account account) {
+        Label accountLabel = new Label(account.getAccountName());
+        accountLabel.setStyle("-fx-border-color: black; -fx-padding: 5px;");
+        accountLabel.setOnDragDetected(event -> {
+            Dragboard db = accountLabel.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(account.getAccountName() + ":" + account.getType());
+            db.setContent(content);
+            event.consume();
+        });
+
+        pane.getChildren().add(accountLabel);
+    }
+    
+    
+
+
+    private boolean isAccountInTable(String accountName, String accountType) {
+        // Check if account already exists in the tables
+        for (Account account : assetsData) {
+            if (account.getAccountName().equals(accountName) && account.getType().equals(accountType)) {
+                return true; // Account already in Assets table
+            }
+        }
+        for (Account account : equityLiabilitiesData) {
+            if (account.getAccountName().equals(accountName) && account.getType().equals(accountType)) {
+                return true; // Account already in Equity & Liabilities table
+            }
+        }
+        return false; // Account not found in either table
+    }
+
+
+    private TableView<Account> createTableView(String tableTitle, ObservableList<Account> tableData) {
+        TableView<Account> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setItems(tableData);
+
+        TableColumn<Account, String> accountNameCol = new TableColumn<>("Account Name");
+        accountNameCol.setCellValueFactory(data -> data.getValue().accountNameProperty());
+
+        TableColumn<Account, Double> valueCol = new TableColumn<>("Value");
+        valueCol.setCellValueFactory(data -> data.getValue().valueProperty().asObject());
+        valueCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        valueCol.setOnEditCommit(event -> {
+            Account account = event.getRowValue();
+            account.setValue(event.getNewValue());
+            updateTotals();
+        });
+
+        table.getColumns().addAll(accountNameCol, valueCol);
+        table.setPrefHeight(300);
+        table.setEditable(true);
+
+        table.setRowFactory(tv -> {
+            TableRow<Account> row = new TableRow<>();
+            row.setOnContextMenuRequested(event -> {
+                if (!row.isEmpty()) {
+                    ContextMenu contextMenu = new ContextMenu();
+                    MenuItem deleteItem = new MenuItem("Delete");
+
+                    Account account = row.getItem();
+                    deleteItem.setDisable(allAccounts.contains(account));
+                    deleteItem.setOnAction(e -> {
+                        tableData.remove(account);
+                        addDraggableLabel((FlowPane) getChildren().get(1), account); // Add back draggable label
+                    });
+
+                    contextMenu.getItems().add(deleteItem);
+                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
+                }
+            });
+            return row;
+        });
+
+        table.setOnDragOver(event -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        table.setOnDragDropped(event -> {
+            String data = event.getDragboard().getString();
+            String[] accountData = data.split(":");
+            String name = accountData[0];
+            String type = accountData[1];
+
+            if (!isAccountInTable(name, type)) {
+                Account account = new Account(name, type, 0.0);
+                Account draggableAccount = findMatchingAccount(account, draggableAccounts);
+                if (draggableAccount != null) {
+                    account.setOriginalValue(draggableAccount.getValue()); // Set the original value from draggable accounts
+                }
+                if (table == assetsTable) {
+                    assetsData.add(account);
+                } else {
+                    equityLiabilitiesData.add(account);
+                }
+
+                // Remove label from draggable pane
+                FlowPane draggablePane = (FlowPane) getChildren().get(1);
+                draggablePane.getChildren().removeIf(node -> ((Label) node).getText().equals(name));
+
+                event.setDropCompleted(true);
+                event.consume();
+            }
+        });
+
+        return table;
+    }
+
 
 	private void populateDefaultAccounts(ObservableList<Account> defaultAccounts) {
-		// Distribute default accounts into the respective tables based on account type
-		for (Account account : defaultAccounts) {
-			if (account.getType().equals("Asset")) {
-				assetsData.add(account);
-			} else {
-				equityLiabilitiesData.add(account);
-			}
-		}
-	}
-
-	private void updateTotals() {
-		double totalAssets = assetsData.stream().mapToDouble(Account::getValue).sum();
-		double totalEquityAndLiabilities = equityLiabilitiesData.stream().mapToDouble(Account::getValue).sum();
-
-		assetsTotalLabel.setText("Total Assets: " + totalAssets);
-		equityLiabilitiesTotalLabel.setText("Total E&L: " + totalEquityAndLiabilities);
-	}
-
-	private boolean isValidationComplete = false;
-	private void validateBalanceSheet(ObservableList<Account> draggableAccounts) {
-
-	    boolean isOnlyDefaultAccounts = assetsData.stream().allMatch(allAccounts::contains)
-	            && equityLiabilitiesData.stream().allMatch(allAccounts::contains);
-
-	    if (isOnlyDefaultAccounts) {
-	        Alert alert = new Alert(Alert.AlertType.WARNING, "Please add or modify accounts before validating.",
-	                ButtonType.OK);
-	        alert.showAndWait();
-	        return;
-	    }
-
-	    boolean isCorrect = true;
-	    StringBuilder errorMessages = new StringBuilder();
-	    List<String> usedAccounts = new ArrayList<>(); // To track used accounts
-	    List<String> usedTypes = new ArrayList<>(); // To track used account types
-
-	    // Validate accounts in assetsData
-	    for (Account account : assetsData) {
-	        Account matchingAccount = findMatchingAccount(account);
-	        if (matchingAccount == null) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" in Assets has wrong values.\n");
-	        } else if (!account.getType().equals("Asset")) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" is in the wrong table (should be Asset).\n");
-	        } else if (Double.compare(account.getValue(), matchingAccount.getValue()) != 0) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" in Assets has wrong values.\n");
-	        }
-	        usedAccounts.add(account.getAccountName()); // Track the account usage
-	        usedTypes.add(account.getType()); // Track the account type usage
-	    }
-
-	    // Validate accounts in equityLiabilitiesData
-	    for (Account account : equityLiabilitiesData) {
-	        Account matchingAccount = findMatchingAccount(account);
-	        if (matchingAccount == null) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" in Liabilities has wrong values.\n");
-	        } else if (!account.getType().equals("Liability")) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" is in the wrong table (should be Liability).\n");
-	        } else if (Double.compare(account.getValue(), matchingAccount.getValue()) != 0) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" in Liabilities has wrong values.\n");
-	        }
-	        usedAccounts.add(account.getAccountName()); // Track the account usage
-	        usedTypes.add(account.getType()); // Track the account type usage
-	    }
-
-	    // Ensure that all draggable accounts are used and have the correct type
-	    for (Account account : draggableAccounts) {
-	        if (!usedAccounts.contains(account.getAccountName())) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" is not used.\n");
-	        } else if (!usedTypes.contains(account.getType())) {
-	            isCorrect = false;
-	            errorMessages.append(account.getAccountName()).append(" is in the wrong table.\n");
+	    for (Account account : defaultAccounts) {
+	        if (account.getType().equals("Asset")) {
+	            assetsData.add(account);
+	        } else {
+	            equityLiabilitiesData.add(account);
 	        }
 	    }
-
-	    // Display result
-	    if (isCorrect) {
-	    	DialogueSystem.resumeDialogue();
-	        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Good Job! Your balance sheet is correct.", ButtonType.OK);
-	        alert.showAndWait();
-
-	        validateButton.setVisible(false); // Hide the validate button
-	        Label successMessage = new Label("Validation Successful!");
-	        successMessage.setFont(new Font(16));
-	        getChildren().add(successMessage);
-
-	        // Move draggable accounts to default accounts
-	        allAccounts.addAll(draggableAccounts);
-	        draggableAccounts.clear();
-
-	        // Allow dialogue to proceed
-	        isValidationComplete = true;
-	    } else {
-	        Alert alert = new Alert(Alert.AlertType.ERROR,
-	                "Balance sheet is not correct. Errors:\n" + errorMessages.toString(), ButtonType.OK);
-	        alert.showAndWait();
-	    }
 	}
 
+    private void updateTotals() {
+        double totalAssets = assetsData.stream().mapToDouble(Account::getValue).sum();
+        double totalEquityAndLiabilities = equityLiabilitiesData.stream().mapToDouble(Account::getValue).sum();
+
+        assetsTotalLabel.setText("Total Assets: " + totalAssets);
+        equityLiabilitiesTotalLabel.setText("Total E&L: " + totalEquityAndLiabilities);
+    }
+
+    private void validateBalanceSheet(ObservableList<Account> draggableAccounts) {
+        boolean isCorrect = true;
+        StringBuilder errorMessages = new StringBuilder();
+
+        // Check totals
+        double totalAssets = assetsData.stream().mapToDouble(Account::getValue).sum();
+        double totalEquityAndLiabilities = equityLiabilitiesData.stream().mapToDouble(Account::getValue).sum();
+
+        if (Double.compare(totalAssets, totalEquityAndLiabilities) != 0) {
+            isCorrect = false;
+            errorMessages.append("Total Assets and Total Liabilities are not equal.\n");
+        }
+
+        // Check individual accounts
+        for (Account account : assetsData) {
+            Account matchingAccount = findMatchingAccount(account, allAccounts);
+            if (matchingAccount == null) {
+                // If the account does not exist in default accounts, treat it as a new draggable account
+                if (Double.compare(account.getValue(), account.getOriginalValue()) != 0) {
+                    isCorrect = false;
+                    errorMessages.append(account.getAccountName())
+                                 .append(" in Assets has incorrect values.\n");
+                }
+            } else {
+                // If the account exists in default accounts, compare original value
+                if (!account.getType().equals("Asset") ||
+                    Double.compare(account.getOriginalValue(), matchingAccount.getOriginalValue()) != 0) {
+                    isCorrect = false;
+                    errorMessages.append(account.getAccountName())
+                                 .append(" in Assets has incorrect original values or has been modified.\n");
+                }
+            }
+        }
+
+        for (Account account : equityLiabilitiesData) {
+            Account matchingAccount = findMatchingAccount(account, allAccounts);
+            if (matchingAccount == null) {
+                // If the account does not exist in default accounts, treat it as a new draggable account
+                if (Double.compare(account.getValue(), account.getOriginalValue()) != 0) {
+                    isCorrect = false;
+                    errorMessages.append(account.getAccountName())
+                                 .append(" in Liabilities has incorrect values.\n");
+                }
+            } else {
+                // If the account exists in default accounts, compare original value
+                if (!account.getType().equals("Liability") ||
+                    Double.compare(account.getOriginalValue(), matchingAccount.getOriginalValue()) != 0) {
+                    isCorrect = false;
+                    errorMessages.append(account.getAccountName())
+                                 .append(" in Liabilities has incorrect original values or has been modified.\n");
+                }
+            }
+        }
+
+        // Show results
+        if (isCorrect) {
+            DialogueSystem.resumeDialogue();
+            successLabel.setText("Good Job! Your balance sheet is correct.");
+            successLabel.setVisible(true); // Show success message
+            validateButton.setVisible(false);
+        } else {
+            successLabel.setVisible(false); // Hide success message on failure
+            Alert alert = new Alert(Alert.AlertType.ERROR,
+                    "Balance sheet is not correct. Errors:\n" + errorMessages.toString(), ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
 
 
-	
+    private Account findMatchingAccount(Account account, ObservableList<Account> accountList) {
+        return accountList.stream()
+                .filter(a -> a.getAccountName().equalsIgnoreCase(account.getAccountName()) // Case-insensitive comparison
+                        && a.getType().equals(account.getType()))
+                .findFirst()
+                .orElse(null);
+    }
 
-	private Account findMatchingAccount(Account account) {
-		// Search for matching account in allAccounts
-		for (Account matchingAccount : allAccounts) {
-			if (matchingAccount.getAccountName().equalsIgnoreCase(account.getAccountName())
-					&& matchingAccount.getType().equals(account.getType())) {
-				return matchingAccount;
-			}
-		}
-		return null; // Not found
-	}
 }
