@@ -278,21 +278,26 @@ public class AccountingPanel extends VBox {
         // Check overall totals.
         double totalAssets = assetsData.stream().mapToDouble(Account::getValue).sum();
         double totalEandL = equityLiabilitiesData.stream().mapToDouble(Account::getValue).sum();
+
         if (Double.compare(totalAssets, totalEandL) != 0) {
             isCorrect = false;
             errorMessages.append("Total Assets and Total Liabilities are not equal.\n");
         }
 
+        // New condition: Balance sheet should not be zero
+        if (totalAssets == 0 && totalEandL == 0) {
+            isCorrect = false;
+            errorMessages.append("Balance sheet cannot be empty. Please add values to the accounts.\n");
+        }
+
         // Validate each account in Assets.
         for (Account account : assetsData) {
-            // For accounts in the Assets table, the expected type is "Asset".
-            // Use the consolidated expected value if available.
             double expectedValue = account.getOriginalValue();
             Account expectedAccount = findMatchingAccount(account, allAccounts);
             if (expectedAccount != null) {
                 expectedValue = expectedAccount.getOriginalValue();
             }
-            // Determine whether there's a type error and/or a value error.
+
             boolean typeError = !account.getType().equalsIgnoreCase("Asset");
             boolean valueError = Double.compare(account.getValue(), expectedValue) != 0;
             if (typeError || valueError) {
@@ -302,7 +307,7 @@ public class AccountingPanel extends VBox {
                     errorMessages.append("is on the wrong side of the balance sheet and has incorrect values.\n");
                 } else if (typeError) {
                     errorMessages.append("is on the wrong side of the balance sheet.\n");
-                } else { // only value error
+                } else {
                     errorMessages.append("has incorrect values.\n");
                 }
             }
@@ -310,12 +315,12 @@ public class AccountingPanel extends VBox {
 
         // Validate each account in Equity & Liabilities.
         for (Account account : equityLiabilitiesData) {
-            // For accounts in the Equity & Liabilities table, the expected type is "Liability".
             double expectedValue = account.getOriginalValue();
             Account expectedAccount = findMatchingAccount(account, allAccounts);
             if (expectedAccount != null) {
                 expectedValue = expectedAccount.getOriginalValue();
             }
+
             boolean typeError = !account.getType().equalsIgnoreCase("Liability");
             boolean valueError = Double.compare(account.getValue(), expectedValue) != 0;
             if (typeError || valueError) {
@@ -325,7 +330,7 @@ public class AccountingPanel extends VBox {
                     errorMessages.append("is on the wrong side of the balance sheet and has incorrect values.\n");
                 } else if (typeError) {
                     errorMessages.append("is on the wrong side of the balance sheet.\n");
-                } else { // only value error
+                } else {
                     errorMessages.append("has incorrect values.\n");
                 }
             }
@@ -344,6 +349,7 @@ public class AccountingPanel extends VBox {
             alert.showAndWait();
         }
     }
+
 
     private Account findMatchingAccount(Account account, ObservableList<Account> accountList) {
         return accountList.stream()

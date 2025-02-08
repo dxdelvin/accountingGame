@@ -1,0 +1,8 @@
+{
+  "dialogues": [
+    {"id": 1, "type": "Normal", "text": "Hi, {BrandName}! It is Still in Progress", "characterImagePath": "/Images/Store/CharSad.png", "nextId": 2}
+
+
+
+  ]
+}

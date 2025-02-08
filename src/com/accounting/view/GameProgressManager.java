@@ -58,13 +58,28 @@ public class GameProgressManager {
 
     // Get the next chapter to load based on the progress
     public static int getNextChapterToLoad() {
-        Map<String, String> progress = loadProgress();
-        for (int i = 0; i <= 10; i++) { // Adjust the range if you have more chapters
-            String chapterKey = "chapter" + i;
-            if (progress.containsKey(chapterKey) && "true".equals(progress.get(chapterKey))) {
-                return i + 1; // Return next chapter (i+1) to load
+    	Map<String, String> progressData = loadProgress(); // Load saved progress
+
+        if (progressData == null || progressData.isEmpty()) {
+            return -1; // No saved progress
+        }
+
+        int highestChapter = 0;
+
+        // Loop through saved data to find the highest unlocked chapter
+        for (String key : progressData.keySet()) {
+            if (key.startsWith("chapter")) { // Check for "chapterX" keys
+                try {
+                    int chapterNum = Integer.parseInt(key.replace("chapter", ""));
+                    if (progressData.get(key).equalsIgnoreCase("true")) {
+                        highestChapter = Math.max(highestChapter, chapterNum);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid chapter format: " + key);
+                }
             }
         }
-        return -1; // Default if no progress found
+
+        return (highestChapter > 0) ? highestChapter + 1 : -1; // Return next chapter number
     }
 }

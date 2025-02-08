@@ -24,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.accounting.main.Account;
@@ -34,7 +33,7 @@ import com.accounting.main.Dialogue;
 import com.accounting.main.DialogueSystem;
 import com.accounting.main.LearningImageManager;
 
-public class Chapter1Controller {
+public class Chapter2Controller {
 	
 	
 
@@ -116,7 +115,7 @@ public class Chapter1Controller {
             Scene scene = rootPane.getScene();
             if (scene != null) {
                 ChapterTransition chapterTransition = new ChapterTransition(rootPane);
-                chapterTransition.displayChapterStartScreen(1);  
+                chapterTransition.displayChapterStartScreen(2);  
             } else {
                 System.out.println("Scene is still null! Cannot display chapter.");
             }
@@ -459,27 +458,18 @@ public class Chapter1Controller {
     }
     
     private void saveLayoutData() {
-        // Load existing progress to avoid overwriting previous data
-        Map<String, String> oldData = GameProgressManager.loadProgress(); 
-        if (oldData == null) {
-            oldData = new HashMap<>();
-        }
+        // Load existing progress so we don't overwrite previous data
+        Map<String, String> layoutData = GameProgressManager.loadProgress(); 
 
-        // Create a LinkedHashMap to maintain order (chapter1 first)
-        Map<String, String> layoutData = new LinkedHashMap<>();
-        
-        // Put chapter1 at the top
-        layoutData.put("chapter1", "true");
+        // Append only "chapter1": "true"
+        layoutData.put("chapter1", "true"); 
 
-        // Add all the old data back, preserving previous entries
-        layoutData.putAll(oldData);
-
-        // Debugging to check the saved data order
+        // Debugging to check the saved data
         layoutData.forEach((key, value) -> System.out.println(key + ": " + value));
 
         // Save the updated progress
         GameProgressManager.saveProgress(layoutData);
-
+        
         // Load the next scene (chapter 2)
         this.primaryStage = (Stage) rootPane.getScene().getWindow();
         try {
@@ -491,7 +481,6 @@ public class Chapter1Controller {
             System.out.println("Failed to load chapter2.fxml");
         }
     }
-
 
     
     

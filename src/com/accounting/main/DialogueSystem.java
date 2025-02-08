@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.File;
-import java.io.IOException; 
+import java.io.IOException;
 import java.util.List;
 
 public class DialogueSystem {
@@ -68,10 +68,6 @@ public class DialogueSystem {
 
     public static void resumeDialogue() {
         isDialoguePaused = false;
-        
-        if (dialogue.getText() != null) {
-        	dialogue.setText("click next");
-        }
     }
 
     

@@ -1,15 +1,15 @@
 {
   "dialogues": [
     {"id": 1, "type": "Normal", "text": "Welcome to {BrandName} Store!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 2},
-    {"id": 2, "type": "Normal", "text": "Ready to start your business journey?", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 3},
+    {"id": 2, "type": "Normal", "text": "Ready to start your business journey?", "characterImagePath": "/Images/Store/char_smallHappy.png", "nextId": 3},
     {"id": 3, "type": "YesNo", "text": "Do you think you'll make millions?", "options": ["Yes", "No"], "characterImagePath": "/Images/Store/charHappy.png", "nextId": {"Yes": 4, "No": 5}},
     {"id": 4, "type": "Normal", "text": "That’s the spirit! Let’s plan your success.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 6},
     {"id": 5, "type": "Normal", "text": "Stay positive! Success is closer than you think.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 6},
-    {"id": 6, "type": "Normal", "text": "Tracking our transactions is important.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 7},
+    {"id": 6, "type": "Normal", "text": "Tracking our transactions is important.", "characterImagePath": "/Images/Store/charTracking.png", "nextId": 7},
     {"id": 7, "type": "Normal", "text": "We don’t want to lose the money.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 8},
-    {"id": 8, "type": "Normal", "text": "So we are going to maintain our own scorecard!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 9},
+    {"id": 8, "type": "Normal", "text": "So we are going to maintain our own scorecard!", "characterImagePath": "/Images/Store/charScoreboard.png", "nextId": 9},
     {"id": 9, "type": "YesNo", "text": "Did you check your savings?", "options": ["Yes", "Why?"], "characterImagePath": "/Images/Store/charPiggy.png", "nextId": {"Yes": 10, "Why?": 11}},
-    {"id": 10, "type": "Normal", "text": "Great! You found 5 Euros to invest.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 12},
+    {"id": 10, "type": "Normal", "text": "Great! You found 5 Euros to invest.", "characterImagePath": "/Images/Store/charHappy.png", "nextId": 12},
     {"id": 11, "type": "Normal", "text": "You’ll need every coin to grow your business. Here’s 5 Euros from your savings.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 12},
     {"id": 12, "type": "Normal", "text": "Let’s rename 'Piggy Bank' to something cooler.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 13},
     {"id": 13, "type": "Normal", "text": "How about 'Original Investment'?", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 14},
@@ -17,14 +17,14 @@
     {"id": 15, "type": "Normal", "text": "Thanks! But it’s your money, so you own it!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 17},
     {"id": 16, "type": "Normal", "text": "Exactly! It’s your hard-earned cash.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 17},
     {"id": 17, "type": "Normal", "text": "Let’s add it to your scoreboard.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 18},
-    {"id": 18, "type": "Normal", "text": "It’ll go on the right side. as You Own It!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 19},
-    {"id": 19, "type": "Normal", "text": "The Cash Goes on Left Side as You Have It!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 20},
+    {"id": 18, "type": "Normal", "text": "It’ll go on the right side. as You Own It!", "characterImagePath": "/Images/Store/charRightHand.png", "nextId": 19},
+    {"id": 19, "type": "Normal", "text": "The Cash Goes on Left Side as You Have It!", "characterImagePath": "/Images/Store/charLeftHand.png", "nextId": 20},
     {"id": 20, "type": "Normal", "text": "Here’s a golden rule:", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 21},
     {"id": 21, "type": "Normal", "text": "The left side always equals the right side.", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 22},
-    {"id": 22, "type": "Normal", "text": "Let’s try that in Practice!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 23},
+    {"id": 22, "type": "Normal", "text": "Let’s try that in Practice!", "characterImagePath": "/Images/Store/charHappy.png", "nextId": 23},
     {"id": 23, "type": "Normal", "text": "You need to Drag Accounts and Balance the Balance Sheet!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 24},
     {"id": 24, "type": "Normal", "text": "Q: You got 5 Euro from Piggy Bank!", "characterImagePath": "/Images/Store/charThinking.png", "nextId": 25},
-	{"id": 25, "type": "Normal", "text": "Great Job Buddy!", "characterImagePath": "/Images/Store/Char@2x.png", "nextId": 26},
+	{"id": 25, "type": "Normal", "text": "Great Job Buddy!", "characterImagePath": "/Images/Store/charHappy.png", "nextId": 26},
 	{
 	  "id": 26,
 	  "type": "YesNo",
@@ -125,21 +125,21 @@
 	  "id": 38,
 	  "type": "Normal",
 	  "text": "Yeah, let's ask Mom for 10 Euro!",
-	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "characterImagePath": "/Images/Store/charHappy.png",
 	  "nextId": 40
 	},
 	{
 	  "id": 39,
 	  "type": "Normal",
 	  "text": "They won’t lend me 10 Euro, better ask my Mom!",
-	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "characterImagePath": "/Images/Store/charRightHand.png",
 	  "nextId": 40
 	},
 	{
 	  "id": 40,
 	  "type": "Normal",
 	  "text": "Thanks Mom for the 10 Euro!!",
-	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "characterImagePath": "/Images/Store/charLeftHand.png",
 	  "nextId": 41
 	},
 	{
@@ -153,7 +153,7 @@
 	  "id": 42,
 	  "type": "Normal",
 	  "text": "So that’s our first Liability in our company!",
-	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "characterImagePath": "/Images/Store/charWow.png",
 	  "nextId": 43
 	},
 	{
@@ -167,7 +167,7 @@
 	  "id": 44,
 	  "type": "Normal",
 	  "text": "Q: You got a 10 Loan From Mom! Balance the sheet!",
-	  "characterImagePath": "/Images/Store/Char@2x.png",
+	  "characterImagePath": "/Images/Store/CharThinking.png",
 	  "nextId": 45
 	},
 	{
@@ -226,14 +226,14 @@
 	{
 	  "id": 52,
 	  "type": "Normal",
-	  "text": "Hallo! Mr. Pappu!! Wie viel für 1 Limonade?",
+	  "text": "Hallo! Mr. Pappu!! How Much for 1 Lemon?",
 	  "characterImagePath": "/Images/Store/Char@2x.png",
 	  "nextId": 53
 	},
 	{
 	  "id": 53,
 	  "type": "Normal",
-	  "text": "Ok! Und wie viel für 1 Kilo Zucker?",
+	  "text": "Ok! Und How much for 1 Kilo Sugar?",
 	  "characterImagePath": "/Images/Store/Char@2x.png",
 	  "nextId": 54
 	},
@@ -261,7 +261,7 @@
 	{
        "id": 57,
        "type": "Input",
-       "text": "How much do you think 50 lemons will cost?",
+       "text": "How much do you think 50 lemons will cost? (In Euro)",
        "correctAnswer": "10",
        "options": [],
        "nextIdCorrect": 58,
@@ -285,7 +285,7 @@
    {
       "id": 60,
       "type": "Input",
-      "text": "How much do you think 5kg Sugar will cost?",
+      "text": "How much do you think 5kg Sugar will cost?  (In Euro)",
       "correctAnswer": "2",
       "options": [],
       "nextIdCorrect": 61,
@@ -305,7 +305,177 @@
      "text": "No! It costs 10 Euro!",
      "characterImagePath": "/Images/Store/charSad.png",
      "nextId": 63
- }  
+ }  ,
+ 
+ {
+   "id": 63,
+   "type": "Normal",
+   "text": "Now that we've got our ingredients, let's see how much we spent in total!",
+   "characterImagePath": "/Images/Store/Char@2x.png",
+   "nextId": 64
+ },
+ {
+   "id": 64,
+   "type": "Input",
+   "text": "How much did we spend in total? (In Euro)",
+   "correctAnswer": "12",
+   "options": [],
+   "nextIdCorrect": 65,
+   "nextIdIncorrect": 66,
+   "characterImagePath": "/Images/Store/charThinking.png"
+ },
+ {
+   "id": 65,
+   "type": "Normal",
+   "text": "Correct! Our total spending is 12 Euros.",
+   "characterImagePath": "/Images/Store/charHappy.png",
+   "nextId": 67
+ },
+ {
+   "id": 66,
+   "type": "Normal",
+   "text": "Not quite! We spent 12 Euros in total. Let's move forward.",
+   "characterImagePath": "/Images/Store/charSad.png",
+   "nextId": 67
+ },
+ {
+   "id": 67,
+   "type": "Normal",
+   "text": "Great! Now, let's record these as Expenses and Inventory in our financial records.",
+   "characterImagePath": "/Images/Store/charScoreboard.png",
+   "nextId": 68
+ },
+ {
+   "id": 68,
+   "type": "Normal",
+   "text": "Expenses reduce our earnings. So, we need to update our Balance Sheet.",
+   "characterImagePath": "/Images/Store/charTracking.png",
+   "nextId": 69
+ },
+ {
+   "id": 69,
+   "type": "YesNo",
+   "text": "Where do we reduce the money? Cash or Earnings?",
+   "options": ["Cash", "Earnings"],
+   "characterImagePath": "/Images/Store/charThinking.png",
+   "nextId": {
+     "Cash": 70,
+     "Earnings": 71
+   }
+ },
+ {
+   "id": 70,
+   "type": "Normal",
+   "text": "That's correct! We pay expenses out of Cash first.",
+   "characterImagePath": "/Images/Store/charHappy.png",
+   "nextId": 72
+ },
+ {
+   "id": 71,
+   "type": "Normal",
+   "text": "Not quite! Expenses reduce earnings, by Cash and Increases our Inventory",
+   "characterImagePath": "/Images/Store/charSad.png",
+   "nextId": 72
+ },
+ {
+   "id": 72,
+   "type": "Normal",
+   "text": "Now, does our Balance Sheet still balance?",
+   "characterImagePath": "/Images/Store/charScoreboard.png",
+   "nextId": 73
+ },
+ {
+   "id": 73,
+   "type": "YesNo",
+   "text": "Did You Understand whats Going on?",
+   "options": ["Yes", "No"],
+   "characterImagePath": "/Images/Store/charThinking.png",
+   "nextId": {
+     "Yes": 74,
+     "No": 75
+   }
+ },
+ {
+   "id": 74,
+   "type": "Normal",
+   "text": "Yes! But we still need to track how we spent the money over time.",
+   "characterImagePath": "/Images/Store/charHappy.png",
+   "nextId": 76
+ },
+ {
+   "id": 75,
+   "type": "Normal",
+   "text": "Check our more Learning Images on Accounts Panel!",
+   "characterImagePath": "/Images/Store/charSad.png",
+   "nextId": 73
+ },
+ {
+   "id": 76,
+   "type": "Normal",
+   "text": "The Balance Sheet only shows a snapshot in time.",
+   "characterImagePath": "/Images/Store/charScoreboard.png",
+   "nextId": 77
+ },
+ {
+   "id": 77,
+   "type": "Normal",
+   "text": "To track our progress over time, we need something else...",
+   "characterImagePath": "/Images/Store/charThinking.png",
+   "nextId": 78
+ },
+ {
+   "id": 78,
+   "type": "YesNo",
+   "text": "Do you know what this second financial scorecard is called?",
+   "options": ["Income Statement", "Magic Chart"],
+   "characterImagePath": "/Images/Store/charThinking.png",
+   "nextId": {
+     "Income Statement": 79,
+     "Magic Chart": 80
+   }
+ },
+ {
+   "id": 79,
+   "type": "Normal",
+   "text": "That's right! It's called an Income Statement!",
+   "characterImagePath": "/Images/Store/charHappy.png",
+   "nextId": 81
+ },
+ {
+   "id": 80,
+   "type": "Normal",
+   "text": "Haha! That would be fun, but no, it's called an Income Statement.",
+   "characterImagePath": "/Images/Store/charSad.png",
+   "nextId": 81
+ },
+ {
+   "id": 81,
+   "type": "Normal",
+   "text": "An Income Statement tells us how much we earned and how much we spent.",
+   "characterImagePath": "/Images/Store/charTracking.png",
+   "nextId": 82
+ },
+ {
+   "id": 82,
+   "type": "Normal",
+   "text": "It shows the money flowing into and out of our business over time.",
+   "characterImagePath": "/Images/Store/charTracking.png",
+   "nextId": 83
+ },
+ {
+   "id": 83,
+   "type": "Normal",
+   "text": "And that’s how we’ll track our profit and growth!",
+   "characterImagePath": "/Images/Store/charHappy.png",
+   "nextId": 84
+ },
+ {
+   "id": 84,
+   "type": "Normal",
+   "text": "Let's move on to tracking our first week's earnings and expenses!",
+   "characterImagePath": "/Images/Store/charScoreboard.png"
+ }
+
 
 
   ]
