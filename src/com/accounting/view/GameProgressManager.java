@@ -64,7 +64,7 @@ public class GameProgressManager {
             return -1; // No saved progress
         }
 
-        int highestChapter = 0;
+        int highestChapter = -1;
 
         // Loop through saved data to find the highest unlocked chapter
         for (String key : progressData.keySet()) {
@@ -80,6 +80,6 @@ public class GameProgressManager {
             }
         }
 
-        return (highestChapter > 0) ? highestChapter + 1 : -1; // Return next chapter number
+        return (highestChapter >= 0) ? highestChapter + 1 : -1; // Return next chapter number
     }
 }
